@@ -10,6 +10,7 @@ class BaseScaleMode
 	public var deviceSize(default, null):FlxPoint;
 	public var gameSize(default, null):FlxPoint;
 	public var scale(default, null):FlxPoint;
+	public var pointerMultiplier(default, null):FlxPoint;
 	public var offset(default, null):FlxPoint;
 	
 	public var horizontalAlign(default, set):FlxHorizontalAlign = CENTER;
@@ -20,6 +21,7 @@ class BaseScaleMode
 		deviceSize = FlxPoint.get();
 		gameSize = FlxPoint.get();
 		scale = FlxPoint.get();
+		pointerMultiplier = FlxPoint.get(1, 1);
 		offset = FlxPoint.get();
 	}
 	
@@ -48,6 +50,8 @@ class BaseScaleMode
 	{
 		scale.x = gameSize.x / (FlxG.width * FlxG.initialZoom);
 		scale.y = gameSize.y / (FlxG.height * FlxG.initialZoom);
+		pointerMultiplier.x = 1;
+		pointerMultiplier.y = 1;
 		updateOffsetX();
 		updateOffsetY();
 	}

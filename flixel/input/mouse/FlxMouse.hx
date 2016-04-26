@@ -14,10 +14,10 @@ import flash.ui.Mouse;
 import flash.Vector;
 import flixel.FlxG;
 import flixel.input.IFlxInputManager;
-import flixel.input.mouse.FlxMouseButton;
 import flixel.system.FlxAssets;
 import flixel.system.replay.MouseRecord;
 import flixel.util.FlxDestroyUtil;
+import flixel.input.mouse.FlxMouseButton.FlxMouseButtonID;
 #if FLX_NATIVE_CURSOR
 import flash.ui.MouseCursor;
 import flash.ui.MouseCursorData;
@@ -397,8 +397,8 @@ class FlxMouse extends FlxPointer implements IFlxInputManager
 		//actually position the flixel mouse cursor graphic
 		if (visible)
 		{
-			cursorContainer.x = FlxG.game.mouseX;
-			cursorContainer.y = FlxG.game.mouseY;
+			cursorContainer.x = FlxG.game.mouseX * FlxG.scaleMode.pointerMultiplier.x;
+			cursorContainer.y = FlxG.game.mouseY * FlxG.scaleMode.pointerMultiplier.y;
 		}
 		#end
 		

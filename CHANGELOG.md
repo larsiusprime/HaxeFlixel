@@ -10,13 +10,26 @@
 * `Console`:
 	* added `watch` and `watchExpression` commands (#1790)
 	* removed `resetState`, `switchState` and `resetGame` commands
+	* added `Reflect`, `Std`, `StringTools`, `Sys` and `Type` to default classes
 * `CompletionListEntry`: fixed text width exceeding list width
 * `CompletionHandler`: added locals declared with `var` to completion
 * `WatchEntry`:
 	* added a remove button
 	* added `Float` rounding (to `FlxG.debugger.precision` decimals)
+	* added support for in- / decrement of numeric values via up / down keys
+	* added support for moving selection to start / end via up / down keys (non-numeric values)
 * `FlxStringUtil`: added `isNullOrEmpty()`
 * `FlxArrayUtil`: optimized `flatten2DArray()`
+* `FlxDefines`: added inverted versions for all `FLX_NO`-defines (e.g. `FLX_DEBUG` for `FLX_NO_DEBUG`)
+* `FlxTileFrames`: added `spacing` and `border` arguments to `combineTileSets()` and `combineTileFrames()` (#1807)
+* `FlxBitmapDataUtil`: added `copyBorderPixels()`
+* `FlxGame`: `GameWidth` and `GameHeight` in `new()` now use the window size if set to 0 (#1811)
+* `FlxPoint`: added `scale()` (#1811)
+* `FlxCamera`: fixed background scaling for `zoom < 1` on native targets (#1588)
+* `FlxSpriteUtil`: changed `alphaMask()` arguments from `Dynamic` to `FlxGraphicAsset` (#1806)
+* `FlxBar`: added `numDivisions`
+* `FlxBaseTilemap`: added `loadMapFromGraphic()` (#1525)
+* `FlxObject`: fixed `overlapsPoint()` at x / y = 0 (#1818) 
 
 4.0.1
 ------------------------------
