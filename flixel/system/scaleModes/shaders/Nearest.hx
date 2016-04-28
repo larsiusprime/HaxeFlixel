@@ -1,5 +1,6 @@
 package flixel.system.scaleModes.shaders;
 
+#if sys
 import openfl.display.Shader;
 
 class Nearest extends Shader implements IScaleShader
@@ -31,3 +32,4 @@ void main()
 	}
 	
 }
+#end

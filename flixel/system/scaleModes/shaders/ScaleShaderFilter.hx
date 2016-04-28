@@ -12,6 +12,7 @@ class ScaleShaderFilter extends ShaderFilter
 	public var strength:Float;
 	public var resolution:Array<Float>;
 
+	#if sys
 	override function __growBounds (rect:Rectangle):Void
 	{
 		
@@ -21,6 +22,7 @@ class ScaleShaderFilter extends ShaderFilter
 		rect.height = 400;
 		
 	}
+	#end
 	
 	public function postDraw():Void
 	{

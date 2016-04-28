@@ -1,10 +1,12 @@
 package flixel.system.scaleModes;
 
+#if !flash
 import flixel.FlxG;
 import flixel.util.typeLimit.OneOfTwo;
 
 #if !openfl_legacy
 import flixel.system.scaleModes.shaders.ScaleShaderFilter;
+
 import flixel.system.scaleModes.shaders.Nearest;
 import flixel.system.scaleModes.shaders.Bilinear;
 
@@ -57,10 +59,7 @@ class ShaderScaleMode extends flixel.system.scaleModes.BaseScaleMode
 
 		this.filters = [];
 
-		FlxG.game.setFilters(filters);
 		FlxG.game.filtersEnabled = true;
-
-		FlxG.signals.postDraw.add(postDraw);
 	}
 
 	public function postDraw():Void
@@ -87,11 +86,15 @@ class ShaderScaleMode extends flixel.system.scaleModes.BaseScaleMode
 	public function activate():Void
 	{
 		filters.push(this.filter);
+		FlxG.game.setFilters(filters);
+		FlxG.signals.postDraw.add(postDraw);
 	}
 
 	public function deactivate():Void
 	{
 		filters.remove(this.filter);
+		FlxG.game.setFilters([]);
+		FlxG.signals.postDraw.add(postDraw);
 	}
 
 	override private function updateScaleOffset():Void
@@ -266,3 +269,4 @@ void main()
 	}
 	#end
 }
+#end

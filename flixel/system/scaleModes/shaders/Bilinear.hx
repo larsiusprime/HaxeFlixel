@@ -1,10 +1,10 @@
 package flixel.system.scaleModes.shaders;
 
+#if sys
 import openfl.display.Shader;
 
 class Bilinear extends Shader implements IScaleShader
 {
-	
 	@fragment var frag = "
 
 varying vec2 vTexCoord;
@@ -53,5 +53,5 @@ void main()
 	{
 		super();
 	}
-	
 }
+#end
