@@ -12,8 +12,6 @@ class ScaleShaderFilter extends ShaderFilter
 	public var strength:Float;
 	public var resolution:Array<Float>;
 	
-	#if sys
-	#end
 	public function postDraw():Void
 	{
 		var ts = cast(shader, IScaleShader);
