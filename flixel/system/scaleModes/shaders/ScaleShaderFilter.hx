@@ -11,19 +11,9 @@ class ScaleShaderFilter extends ShaderFilter
 	public var scaleY:Float;
 	public var strength:Float;
 	public var resolution:Array<Float>;
-
-	#if sys
-	override function __growBounds (rect:Rectangle):Void
-	{
-		
-		rect.x = 0;
-		rect.y = 0;
-		rect.width = 400;
-		rect.height = 400;
-		
-	}
-	#end
 	
+	#if sys
+	#end
 	public function postDraw():Void
 	{
 		var ts = cast(shader, IScaleShader);
