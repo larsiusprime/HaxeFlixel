@@ -1,6 +1,5 @@
 package flixel.system.scaleModes;
 #if !flash
-#if !flash
 import flixel.FlxG;
 import flixel.util.typeLimit.OneOfTwo;
 
