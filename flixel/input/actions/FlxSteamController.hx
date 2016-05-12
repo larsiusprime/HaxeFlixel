@@ -92,7 +92,7 @@ class FlxSteamController
 		{
 			for (i in 0...controllers.length)
 			{
-				controllers[SteamControllerHandle].actionSet = ActionSetHandle;
+				controllers[i].actionSet = ActionSetHandle;
 			}
 		}
 		else if (SteamControllerHandle == FlxInputDeviceID.FIRST_ACTIVE)
