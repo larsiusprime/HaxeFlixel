@@ -1,4 +1,5 @@
 package flixel.system.scaleModes;
+#if !html5
 #if !flash
 import flixel.FlxG;
 import flixel.util.typeLimit.OneOfTwo;
@@ -6,8 +7,10 @@ import flixel.util.typeLimit.OneOfTwo;
 #if !openfl_legacy 
 import flixel.system.scaleModes.shaders.ScaleShaderFilter;
 
+#if sys
 import flixel.system.scaleModes.shaders.Nearest;
 import flixel.system.scaleModes.shaders.Bilinear;
+#end
 
 import openfl.filters.BitmapFilter;
 import openfl.display.Shader;
@@ -295,4 +298,5 @@ void main()
 	}
 	#end
 }
+#end
 #end
