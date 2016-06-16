@@ -17,6 +17,8 @@ class FlxSplash extends FlxState
 {
 	public static var nextState:Class<FlxState>;
 	
+	public static var mute:Bool = false;
+	
 	private var _sprite:Sprite;
 	private var _gfx:Graphics;
 	private var _text:TextField;
@@ -73,7 +75,10 @@ class FlxSplash extends FlxState
 		onResize(stageWidth, stageHeight);
 		
 		#if FLX_SOUND_SYSTEM 
-		FlxG.sound.load(FlxAssets.getSound("flixel/sounds/flixel")).play();
+		if (!mute)
+		{
+			FlxG.sound.load(FlxAssets.getSound("flixel/sounds/flixel")).play();
+		}
 		#end
 	}
 	
