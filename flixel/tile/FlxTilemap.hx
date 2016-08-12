@@ -1038,12 +1038,6 @@ class FlxTilemap extends FlxBaseTilemap<FlxTile>
 			buffer.antialiasing = value;
 		return antialiasing = value;
 	}
-			{
-				buffer.antialiasing = antialiasing;
-			}
-		}
-		return antialiasing;
-	}
 	
 	/**
 	 * Internal function for setting graphic property for this object. 
