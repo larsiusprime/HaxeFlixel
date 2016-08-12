@@ -1034,7 +1034,7 @@ class FlxText extends FlxSprite
 	private function dtfCopy():TextFormat
 	{
 		var dtf:TextFormat = textField.defaultTextFormat;
-		return new TextFormat(dtf.font, dtf.size, dtf.color, dtf.bold, dtf.italic, dtf.underline, dtf.url, dtf.target, dtf.align);
+		return dtf.clone();
 	}
 	
 	private inline function updateDefaultFormat():Void
