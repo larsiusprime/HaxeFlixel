@@ -188,14 +188,18 @@ class FlxAction implements IFlxDestroyable
 	
 	public function removeAllInputs(Destroy:Bool = true):Void
 	{
-		for (input in inputs)
-		{
+		var len = inputs.length;
+		for (i in 0...len){
+			var j = len - i - 1;
+			var input = inputs[j];
 			removeInput(input, Destroy);
+			inputs.splice(j, 1);
 		}
 	}
 	
 	public function removeInput(Input:FlxActionInput, Destroy:Bool = false):Void
 	{
+		if (Input == null) return;
 		inputs.remove(Input);
 		if (Destroy)
 		{
