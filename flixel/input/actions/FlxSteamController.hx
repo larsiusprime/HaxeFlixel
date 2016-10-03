@@ -98,13 +98,26 @@ class FlxSteamController
 			for (i in 0...controllers.length)
 			{
 				controllers[i].actionSet = ActionSetHandle;
+				Steam.controllers.activateActionSet(controllers[i].handle, ActionSetHandle);
 			}
 		}
 		else if (SteamControllerHandle == FlxInputDeviceID.FIRST_ACTIVE)
 		{
-			controllers[SteamControllerHandle].actionSet = ActionSetHandle;
+			//TODO: not sure FIRST_ACTIVE will be very reliable in a steam controller context... I might consider dropping support for this handle in the future
+			for (i in 0...controllers.length)
+			{
+				if (controllers[i].active)
+				{
+					controllers[i].actionSet = ActionSetHandle;
+					Steam.controllers.activateActionSet(controllers[i].handle, ActionSetHandle);
+					break;
+				}
+			}
 		}
-		Steam.controllers.activateActionSet(SteamControllerHandle, ActionSetHandle);
+		else
+		{
+			Steam.controllers.activateActionSet(SteamControllerHandle, ActionSetHandle);
+		}
 		#end
 	}
 	
