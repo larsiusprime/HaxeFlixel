@@ -23,7 +23,18 @@ import steamwrap.api.Steam;
 @:allow(flixel.input.actions)
 class FlxSteamController
 {
+	public static var MAX_CONTROLLERS(get, null):Int;
+	
 	private static var controllers:Array<FlxSteamControllerMetadata>;
+	
+	private static inline function get_MAX_CONTROLLERS():Int
+	{
+		#if steamwrap
+			return Steam.controllers.MAX_CONTROLLERS;
+		#else
+			return 0;
+		#end
+	}
 	
 	private static function clear()
 	{
