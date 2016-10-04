@@ -5,6 +5,10 @@ import flixel.input.actions.FlxActionInputAnalog;
 import flixel.input.actions.FlxActionInputDigital;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
+#if steamwrap
+import steamwrap.api.Controller;
+import steamwrap.api.Controller.EControllerActionOrigin;
+#end
 
 /**
  * A digital action is a binary on/off event like "jump" or "fire". 
@@ -179,11 +183,52 @@ class FlxAction implements IFlxDestroyable
 	private var _timestamp:Int = 0;
 	private var _check:Bool = false;
 	
+	#if steamwrap
+	private var _steamOriginsChecksum:Int = 0;
+	private var _steamOriginsChanged:Bool = false;
+	private var _steamOrigins:Array<EControllerActionOrigin>;
+	#end
+	
 	private function new(InputType:FlxInputType, Name:String)
 	{
 		type = InputType;
 		name = Name;
 		inputs = [];
+		_steamOrigins = [];
+		for (i in 0...FlxSteamController.MAX_ORIGINS)
+		{
+			_steamOrigins.push(cast 0);
+		}
+	}
+	
+	public function getFirstSteamOrigin():Int
+	{
+		#if steamwrap
+		trace("get first = " + _steamOrigins);
+		for (i in 0..._steamOrigins.length)
+		{
+			if (_steamOrigins[i] != EControllerActionOrigin.NONE)
+			{
+				return cast _steamOrigins[i];
+			}
+		}
+		#end
+		return 0;
+	}
+	
+	public function getSteamOrigins(?origins:Array<Int>):Array<Int>
+	{
+		#if steamwrap
+		if (origins == null)
+		{
+			origins = [];
+		}
+		for (i in 0..._steamOrigins.length)
+		{
+			origins[i] = cast _steamOrigins[i];
+		}
+		#end
+		return origins;
 	}
 	
 	public function removeAllInputs(Destroy:Bool = true):Void
@@ -267,6 +312,10 @@ class FlxAction implements IFlxDestroyable
 	{
 		FlxDestroyUtil.destroyArray(inputs);
 		inputs = null;
+		#if steamwrap
+		FlxArrayUtil.clearArray(_steamOrigins);
+		_steamOrigins = null;
+		#end
 	}
 	
 	public function match(other:FlxAction):Bool

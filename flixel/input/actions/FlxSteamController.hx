@@ -24,6 +24,7 @@ import steamwrap.api.Steam;
 class FlxSteamController
 {
 	public static var MAX_CONTROLLERS(get, null):Int;
+	public static var MAX_ORIGINS(get, null):Int;
 	
 	private static var controllers:Array<FlxSteamControllerMetadata>;
 	
@@ -31,6 +32,15 @@ class FlxSteamController
 	{
 		#if steamwrap
 			return Steam.controllers.MAX_CONTROLLERS;
+		#else
+			return 0;
+		#end
+	}
+	
+	private static inline function get_MAX_ORIGINS():Int
+	{
+		#if steamwrap
+			return Steam.controllers.MAX_ORIGINS;
 		#else
 			return 0;
 		#end
@@ -171,6 +181,7 @@ class FlxSteamController
 	{
 		if (Steam.controllers == null) return data;
 		data = Steam.controllers.getAnalogActionData(controller, action, data);
+		data.y *= -1;
 		if (controller >= 0 && controller < controllers.length)
 		{
 			if (data.bActive > 0 && data.x != 0 || data.y != 0)
