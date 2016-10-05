@@ -645,6 +645,7 @@ class ActionSetRegister implements IFlxDestroyable
 	@:access(flixel.input.actions.FlxAction)
 	private function updateDigitalActionOrigins(action:FlxActionDigital, deviceID:Int, setHandle:Int)
 	{
+		#if steamwrap
 		var checksum = action._steamOriginsChecksum;
 		if (deviceID == FlxInputDeviceID.ALL) deviceID = 0;
 		Steam.controllers.getDigitalActionOrigins(deviceID, setHandle, action.steamHandle, cast action._steamOrigins);
@@ -656,11 +657,13 @@ class ActionSetRegister implements IFlxDestroyable
 		{
 			action._steamOriginsChanged = false;
 		}
+		#end
 	}
 	
 	@:access(flixel.input.actions.FlxAction)
 	private function updateAnalogActionOrigins(action:FlxActionAnalog, deviceID:Int, setHandle:Int)
 	{
+		#if steamwrap
 		var checksum = action._steamOriginsChecksum;
 		if (deviceID == FlxInputDeviceID.ALL) deviceID = 0;
 		Steam.controllers.getAnalogActionOrigins(deviceID, setHandle, action.steamHandle, cast action._steamOrigins);
@@ -675,6 +678,7 @@ class ActionSetRegister implements IFlxDestroyable
 		{
 			action._steamOriginsChanged = false;
 		}
+		#end
 	}
 	
 	private function cheapChecksum(arr:Array<Int>):Int

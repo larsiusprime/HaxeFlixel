@@ -194,11 +194,13 @@ class FlxAction implements IFlxDestroyable
 		type = InputType;
 		name = Name;
 		inputs = [];
+		#if steamwrap
 		_steamOrigins = [];
 		for (i in 0...FlxSteamController.MAX_ORIGINS)
 		{
 			_steamOrigins.push(cast 0);
 		}
+		#end
 	}
 	
 	public function getFirstSteamOrigin():Int
