@@ -31,6 +31,7 @@ class FlxSteamController
 	private static inline function get_MAX_CONTROLLERS():Int
 	{
 		#if steamwrap
+			if (Steam.controllers == null) return 0;
 			return Steam.controllers.MAX_CONTROLLERS;
 		#else
 			return 0;
@@ -40,6 +41,7 @@ class FlxSteamController
 	private static inline function get_MAX_ORIGINS():Int
 	{
 		#if steamwrap
+			if (Steam.controllers == null) return 0;
 			return Steam.controllers.MAX_ORIGINS;
 		#else
 			return 0;
@@ -49,6 +51,7 @@ class FlxSteamController
 	private static function clear()
 	{
 		#if steamwrap
+		if (controllers == null) return;
 		for (i in 0...controllers.length)
 		{
 			controllers[i].active = false;

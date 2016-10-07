@@ -626,7 +626,6 @@ class ActionSetRegister implements IFlxDestroyable
 					var theSetHandle = theSet.steamHandle;
 					FlxSteamController.activateActionSet(i, theSetHandle);
 					
-					//TODO: verify that "i" is the correct handle and we don't really need FlxSteamController.controllers[i].handle or something
 					for (dAction in theSet.digitalActions)
 					{
 						updateDigitalActionOrigins(dAction, i, theSetHandle);
@@ -646,6 +645,7 @@ class ActionSetRegister implements IFlxDestroyable
 	private function updateDigitalActionOrigins(action:FlxActionDigital, deviceID:Int, setHandle:Int)
 	{
 		#if steamwrap
+		if (Steam.controllers == null) return;
 		var checksum = action._steamOriginsChecksum;
 		if (deviceID == FlxInputDeviceID.ALL) deviceID = 0;
 		Steam.controllers.getDigitalActionOrigins(deviceID, setHandle, action.steamHandle, cast action._steamOrigins);
@@ -664,12 +664,10 @@ class ActionSetRegister implements IFlxDestroyable
 	private function updateAnalogActionOrigins(action:FlxActionAnalog, deviceID:Int, setHandle:Int)
 	{
 		#if steamwrap
+		if (Steam.controllers == null) return;
 		var checksum = action._steamOriginsChecksum;
 		if (deviceID == FlxInputDeviceID.ALL) deviceID = 0;
 		Steam.controllers.getAnalogActionOrigins(deviceID, setHandle, action.steamHandle, cast action._steamOrigins);
-		if (action.name == "free_move"){
-			trace("free_move origins = " + action._steamOrigins);
-		}
 		if (checksum != cheapChecksum(cast action._steamOrigins))
 		{
 			action._steamOriginsChanged = true;
