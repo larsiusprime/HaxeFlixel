@@ -4,6 +4,7 @@ import flixel.input.FlxInput;
 import flixel.input.IFlxInput;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionInput;
+import flixel.input.actions.FlxActionInputDigital.FlxActionInputDigitalSteam;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.mouse.FlxMouseButton.FlxMouseButtonID;
 import flixel.input.gamepad.FlxGamepad;
