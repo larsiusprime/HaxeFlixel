@@ -183,9 +183,13 @@ class FlxAction implements IFlxDestroyable
 	private var _timestamp:Int = 0;
 	private var _check:Bool = false;
 	
+	/**
+	 * Whether the steam controller inputs for this action have changed since the last time origins were polled. Always false if steam isn't active
+	 */
+	public var steamOriginsChanged(default, null):Bool = false;
+	
 	#if steamwrap
 	private var _steamOriginsChecksum:Int = 0;
-	private var _steamOriginsChanged:Bool = false;
 	private var _steamOrigins:Array<EControllerActionOrigin>;
 	#end
 	
@@ -206,7 +210,6 @@ class FlxAction implements IFlxDestroyable
 	public function getFirstSteamOrigin():Int
 	{
 		#if steamwrap
-		trace("get first = " + _steamOrigins);
 		for (i in 0..._steamOrigins.length)
 		{
 			if (_steamOrigins[i] != EControllerActionOrigin.NONE)
