@@ -393,7 +393,6 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 		{
 			if (addSet(FlxActionSet.fromJSON(set, CallbackDigital, CallbackAnalog)) != -1)
 			{
-				trace("added set : " + sets[sets.length - 1].name);
 				i++;
 			}
 		}
@@ -782,6 +781,7 @@ class ActionSetRegister implements IFlxDestroyable
 		
 		return changed;
 		#end
+		return [];
 	}
 	
 	@:access(flixel.input.actions.FlxAction)
@@ -791,8 +791,9 @@ class ActionSetRegister implements IFlxDestroyable
 		if (Steam.controllers == null) return;
 		var checksum = action._steamOriginsChecksum;
 		if (deviceID == FlxInputDeviceID.ALL) deviceID = 0;
-		Steam.controllers.getDigitalActionOrigins(deviceID, setHandle, action.steamHandle, cast action._steamOrigins);
+		Steam.controllers.getDigitalActionOrigins(deviceID, setHandle, action.steamHandle, action._steamOrigins);
 		var newChecksum = cheapChecksum(cast action._steamOrigins);
+		
 		if (checksum != newChecksum)
 		{
 			action.steamOriginsChanged = true;
