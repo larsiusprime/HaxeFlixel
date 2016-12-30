@@ -293,12 +293,15 @@ class FlxActionSet implements IFlxDestroyable
 				var theInput:FlxActionInput = null;
 				
 				//check if any of the steam controller inputs match this handle
-				for (input in action.inputs)
+				if (action.inputs != null)
 				{
-					if (input.device == FlxInputDevice.STEAM_CONTROLLER && input.deviceID == Handle)
+					for (input in action.inputs)
 					{
-						inputExists = true;
-						theInput = input;
+						if (input.device == FlxInputDevice.STEAM_CONTROLLER && input.deviceID == Handle)
+						{
+							inputExists = true;
+							theInput = input;
+						}
 					}
 				}
 				

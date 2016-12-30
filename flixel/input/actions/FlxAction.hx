@@ -210,6 +210,7 @@ class FlxAction implements IFlxDestroyable
 	public function getFirstSteamOrigin():Int
 	{
 		#if steamwrap
+		if (_steamOrigins == null) return 0;
 		for (i in 0..._steamOrigins.length)
 		{
 			if (_steamOrigins[i] != EControllerActionOrigin.NONE)
@@ -228,9 +229,12 @@ class FlxAction implements IFlxDestroyable
 		{
 			origins = [];
 		}
-		for (i in 0..._steamOrigins.length)
+		if (_steamOrigins != null)
 		{
-			origins[i] = cast _steamOrigins[i];
+			for (i in 0..._steamOrigins.length)
+			{
+				origins[i] = cast _steamOrigins[i];
+			}
 		}
 		#end
 		return origins;
@@ -281,7 +285,7 @@ class FlxAction implements IFlxDestroyable
 		_timestamp = @:privateAccess FlxG.game._total;
 		_check = false;
 		
-		var len = inputs.length;
+		var len = inputs != null ? inputs.length : 0;
 		for (i in 0...len)
 		{
 			var j = len - i - 1;
@@ -330,6 +334,10 @@ class FlxAction implements IFlxDestroyable
 	
 	private function addGenericInput(input:FlxActionInput):FlxAction
 	{
+		if (inputs == null)
+		{
+			inputs = [];
+		}
 		if (false == checkExists(input))
 		{
 			inputs.push(input);
@@ -339,6 +347,7 @@ class FlxAction implements IFlxDestroyable
 	
 	private function checkExists(input:FlxActionInput):Bool
 	{
+		if (inputs == null) return false;
 		for (i in inputs)
 		{
 			if (input == i)
