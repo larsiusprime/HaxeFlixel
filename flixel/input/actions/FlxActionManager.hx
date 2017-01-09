@@ -1,5 +1,7 @@
 package flixel.input.actions;
 
+import flixel.input.actions.FlxAction.FlxActionAnalog;
+import flixel.input.actions.FlxAction.FlxActionDigital;
 import flixel.input.actions.FlxActionInput.FlxInputDevice;
 import flixel.input.actions.FlxActionInput.FlxInputDeviceID;
 import flixel.input.actions.FlxActionInput.FlxInputDeviceObject;
@@ -9,11 +11,11 @@ import flixel.input.gamepad.FlxGamepad;
 import flixel.util.FlxArrayUtil;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
-import flixel.input.FlxInput.FlxInputType;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import haxe.Json;
 
 #if steamwrap
+import steamwrap.api.Steam;
 import steamwrap.data.ControllerConfig;
 #end
 

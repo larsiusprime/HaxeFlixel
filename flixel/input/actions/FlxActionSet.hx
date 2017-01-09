@@ -1,5 +1,14 @@
 package flixel.input.actions;
 
+import flixel.input.FlxInput.FlxInputState;
+import flixel.input.actions.FlxAction.FlxActionAnalog;
+import flixel.input.actions.FlxAction.FlxActionDigital;
+import flixel.input.actions.FlxActionInput.FlxInputType;
+import flixel.input.actions.FlxActionInput.FlxInputDevice;
+import flixel.input.actions.FlxActionInputAnalog.FlxActionInputAnalogSteam;
+import flixel.input.actions.FlxActionInputAnalog.FlxAnalogState;
+import flixel.input.actions.FlxActionInputAnalog.FlxAnalogAxis;
+import flixel.input.actions.FlxActionInputDigital.FlxActionInputDigitalSteam;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 import haxe.Json;

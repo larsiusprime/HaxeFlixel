@@ -8,6 +8,10 @@ import flixel.input.gamepad.FlxGamepad;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.mouse.FlxMouseButton.FlxMouseButtonID;
 
+#if steamwrap
+import steamwrap.api.Controller.ControllerAnalogActionData;
+#end
+
 @:enum
 abstract FlxAnalogState(Int) from Int
 {

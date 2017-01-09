@@ -5,6 +5,8 @@ import flixel.util.FlxSignal.FlxTypedSignal;
 
 #if steamwrap
 import steamwrap.api.Steam;
+import steamwrap.api.Controller.ControllerDigitalActionData;
+import steamwrap.api.Controller.ControllerAnalogActionData;
 #end
 
 /**
