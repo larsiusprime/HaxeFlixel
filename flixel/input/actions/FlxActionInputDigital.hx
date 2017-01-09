@@ -2,18 +2,14 @@ package flixel.input.actions;
 
 import flixel.input.FlxInput;
 import flixel.input.IFlxInput;
-import flixel.input.actions.FlxAction;
-import flixel.input.actions.FlxActionInput;
+import flixel.input.actions.FlxActionInput.FlxInputType;
+import flixel.input.actions.FlxActionInput.FlxInputDevice;
+import flixel.input.actions.FlxActionInput.FlxInputDeviceID;
 import flixel.input.actions.FlxActionInputDigital.FlxActionInputDigitalSteam;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.mouse.FlxMouseButton.FlxMouseButtonID;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.input.gamepad.FlxGamepadInputID;
-
-#if steamwrap
-import steamwrap.api.Steam;
-import steamwrap.api.Controller;
-#end
 
 class FlxActionInputDigital extends FlxActionInput
 {
@@ -289,7 +285,5 @@ class FlxActionInputDigitalIFlxInput extends FlxActionInputDigital
 	}
 	
 	private var input:IFlxInput;
-
+	
 }
-
-

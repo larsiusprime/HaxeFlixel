@@ -1,14 +1,14 @@
 package flixel.input.actions;
-import flixel.util.FlxArrayUtil;
-import flixel.input.actions.FlxActionInput;
-import flixel.input.actions.FlxActionInputAnalog;
-import flixel.input.actions.FlxActionInputDigital;
+
+import flixel.input.actions.FlxActionInput.FlxInputType;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 #if steamwrap
 import steamwrap.api.Controller;
 import steamwrap.api.Controller.EControllerActionOrigin;
 #end
+
+using flixel.util.FlxArrayUtil;
 
 /**
  * A digital action is a binary on/off event like "jump" or "fire". 
@@ -22,7 +22,7 @@ class FlxActionDigital extends FlxAction
 	/**
 	 * Function to call when this action occurs
 	 */
-	 public var callback(default, null):FlxActionDigital->Void;
+	public var callback(default, null):FlxActionDigital->Void;
 	
 	/**
 	 * Create a new digital action
@@ -82,7 +82,7 @@ class FlxActionAnalog extends FlxAction
 	 * X axis value, or the value of a single-axis analog input.
 	 */
 	public var x(get, null):Float;
-	 
+	
 	/**
 	 * Y axis value. (If action only has single-axis input this is always == 0)
 	 */
@@ -271,6 +271,7 @@ class FlxAction implements IFlxDestroyable
 	 * See if this action has just been triggered
 	 * @return
 	 */
+	@:access(FlxG.game)
 	public function check():Bool
 	{
 		_x = null;
@@ -286,9 +287,9 @@ class FlxAction implements IFlxDestroyable
 		_check = false;
 		
 		var len = inputs != null ? inputs.length : 0;
-		for (i in 0...len)
+		for (i in -(len - 1)...0)
 		{
-			var j = len - i - 1;
+			var j = -i;
 			var input = inputs[j];
 			
 			if (input.destroyed)
@@ -348,13 +349,6 @@ class FlxAction implements IFlxDestroyable
 	private function checkExists(input:FlxActionInput):Bool
 	{
 		if (inputs == null) return false;
-		for (i in inputs)
-		{
-			if (input == i)
-			{
-				return true;
-			}
-		}
-		return false;
+		return inputs.contains(input);
 	}
 }

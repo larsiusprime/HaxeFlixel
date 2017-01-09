@@ -9,19 +9,15 @@ import flixel.input.gamepad.FlxGamepad;
 import flixel.util.FlxArrayUtil;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
-import flixel.input.FlxInput;
-import flixel.input.IFlxInput;
-import flixel.input.actions.FlxAction;
-import flixel.input.mouse.FlxMouseButton;
-import flixel.input.gamepad.FlxGamepadInputID;
+import flixel.input.FlxInput.FlxInputType;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import haxe.Json;
 
 #if steamwrap
-import steamwrap.api.Controller;
-import steamwrap.api.Steam;
 import steamwrap.data.ControllerConfig;
 #end
+
+using flixel.util.FlxArrayUtil;
 
 /**
  * High level input manager for FlxActions. This lets you manage multiple input
@@ -45,7 +41,7 @@ import steamwrap.data.ControllerConfig;
  * 
  * The PLAYER cares about ACTIONS:
  * Mario JUMPS, Samus SHOOTS, Captain Falcon TURNS, BRAKES, and ACCELERATES.
- 
+ *
  * The COMPUTER cares about INPUTS:
  * The W key is PRESSED. The Left Mouse button was JUST_RELEASED. Gamepad #2's
  * analog stick is MOVED with values (x=0.4,y=-0.5).
@@ -144,7 +140,6 @@ import steamwrap.data.ControllerConfig;
  * alternative is to call the steamwrap functions directly.
  * 
  */
- 
 class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 {
 	private var sets:Array<FlxActionSet>;
@@ -224,13 +219,8 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 	 */
 	public function addSet(set:FlxActionSet):Int
 	{
-		for (s in sets)
-		{
-			if (s == set)
-			{
-				return -1;
-			}
-		}
+		sets.contains(set);
+			return -1;
 		
 		sets.push(set);
 		
@@ -241,10 +231,8 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 	
 	public function destroy():Void
 	{
-		FlxDestroyUtil.destroyArray(sets);
-		register.destroy();
-		register = null;
-		sets = null;
+		sets = FlxDestroyUtil.destroyArray(sets);
+		register = FlxDestroyUtil.destroy(register);
 	}
 	
 	/**
@@ -285,7 +273,6 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 		return null;
 	}
 	
-	
 	/**
 	 * Returns the action set that has been activated for this specific device
 	 * @param	device
@@ -298,15 +285,18 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 		var id = -1;
 		var index = -1;
 		
-		switch(device)
+		switch (device)
 		{
 			case FlxInputDevice.KEYBOARD: index = register.keyboardSet;
 			case FlxInputDevice.MOUSE: index = register.mouseSet;
 			case FlxInputDevice.GAMEPAD:
-				switch(deviceID)
+				switch (deviceID)
 				{
 					case FlxInputDeviceID.ALL: index = register.gamepadAllSet;
-					case FlxInputDeviceID.FIRST_ACTIVE: id = FlxG.gamepads.getFirstActiveGamepadID();
+					case FlxInputDeviceID.FIRST_ACTIVE: 
+						#if FLX_GAMEPAD
+						id = FlxG.gamepads.getFirstActiveGamepadID();
+						#end
 					case FlxInputDeviceID.NONE: index = -1;
 					default: 
 						if (register.gamepadAllSet != -1)
@@ -319,7 +309,7 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 					index = register.gamepadSets[id];
 				}
 			case FlxInputDevice.STEAM_CONTROLLER:
-				switch(deviceID)
+				switch (deviceID)
 				{
 					case FlxInputDeviceID.ALL: index = register.steamControllerAllSet;
 					case FlxInputDeviceID.NONE: index = -1;
@@ -334,7 +324,7 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 					index = register.steamControllerSets[id];
 				}
 			case FlxInputDevice.ALL:
-				switch(deviceID)
+				switch (deviceID)
 				{
 					case FlxInputDeviceID.ALL: index = register.gamepadAllSet;
 				}
@@ -406,26 +396,28 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 	public function exportToJSON():String
 	{
 		var space:String = "\t";
-		return Json.stringify({"actionSets":sets}, function(key:Dynamic, value:Dynamic):Dynamic{
-			
-			if (Std.is(value, FlxAction))
+		return Json.stringify({"actionSets":sets}, 
+			function(key:Dynamic, value:Dynamic):Dynamic
 			{
-				var fa:FlxAction = cast value;
-				return fa.name;
-			}
-			if (Std.is(value, FlxActionSet))
-			{
-				var fas:FlxActionSet = cast value;
-				return {
-					"name": fas.name,
-					"digitalActions": fas.digitalActions,
-					"analogActions": fas.analogActions
+				if (Std.is(value, FlxAction))
+				{
+					var fa:FlxAction = cast value;
+					return fa.name;
 				}
-			}
-			
-			return value;
-			
-		}, space);
+				if (Std.is(value, FlxActionSet))
+				{
+					var fas:FlxActionSet = cast value;
+					return {
+						"name": fas.name,
+						"digitalActions": fas.digitalActions,
+						"analogActions": fas.analogActions
+					}
+				}
+				
+				return value;
+				
+			},
+		space);
 	}
 	
 	/**
@@ -436,23 +428,12 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 	 */
 	public function removeSet(Set:FlxActionSet, Destroy:Bool = true):Bool
 	{
-		var success = false;
-		for (i in 0...sets.length)
-		{
-			if (sets[i] == Set)
-			{
-				if (Destroy)
-				{
-					sets[i].destroy();
-				}
-				sets.splice(i, 1);
-				success = true;
-				break;
-			}
-		}
-		
+		var success = sets.remove(Set);
 		if (success)
 		{
+			if (Destroy)
+				FlxDestroyUtil.destroy(Set);
+				
 			onChange();
 		}
 		
@@ -642,29 +623,41 @@ class ActionSetRegister implements IFlxDestroyable
 			case FlxInputDevice.GAMEPAD: 
 				switch (DeviceID)
 				{
-					case FlxInputDeviceID.ALL:          gamepadAllSet = ActionSet;
-					                                    clearSetFromArray(-1, gamepadSets);
-					case FlxInputDeviceID.NONE:         clearSetFromArray(ActionSet, gamepadSets);
-					
-					#if !FLX_NO_GAMEPAD
-					case FlxInputDeviceID.FIRST_ACTIVE: gamepadSets[FlxG.gamepads.getFirstActiveGamepadID()] = ActionSet;
+					case FlxInputDeviceID.ALL:
+						gamepadAllSet = ActionSet;
+						clearSetFromArray( -1, gamepadSets);
+						
+					case FlxInputDeviceID.NONE:
+						clearSetFromArray(ActionSet, gamepadSets);
+						
+					#if FLX_GAMEPAD
+					case FlxInputDeviceID.FIRST_ACTIVE:
+						gamepadSets[FlxG.gamepads.getFirstActiveGamepadID()] = ActionSet;
 					#end
 					
-					default:                            gamepadSets[DeviceID] = ActionSet;
+					default:
+						gamepadSets[DeviceID] = ActionSet;
 				}
 			
 			case FlxInputDevice.STEAM_CONTROLLER:
 				switch (DeviceID)
 				{
-					case FlxInputDeviceID.ALL:          steamControllerAllSet = ActionSet;
-					                                    clearSetFromArray( -1, steamControllerSets);
-					                                    for (i in 0...FlxSteamController.MAX_CONTROLLERS)
-					                                    {
-					                                        steamControllerSets[i] = ActionSet;
-					                                    }
-					case FlxInputDeviceID.NONE:         clearSetFromArray(ActionSet, steamControllerSets);
-					case FlxInputDeviceID.FIRST_ACTIVE: steamControllerSets[FlxSteamController.getFirstActiveHandle()] = ActionSet;
-					default:                            steamControllerSets[DeviceID] = ActionSet;
+					case FlxInputDeviceID.ALL:
+						steamControllerAllSet = ActionSet;
+						clearSetFromArray( -1, steamControllerSets);
+						for (i in 0...FlxSteamController.MAX_CONTROLLERS)
+						{
+							steamControllerSets[i] = ActionSet;
+						}
+						
+					case FlxInputDeviceID.NONE:
+						clearSetFromArray(ActionSet, steamControllerSets);
+						
+					case FlxInputDeviceID.FIRST_ACTIVE:
+						steamControllerSets[FlxSteamController.getFirstActiveHandle()] = ActionSet;
+						
+					default:
+						steamControllerSets[DeviceID] = ActionSet;
 				}
 				
 			case FlxInputDevice.ALL:

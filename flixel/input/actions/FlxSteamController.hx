@@ -1,11 +1,9 @@
 package flixel.input.actions;
-import flixel.input.FlxInput;
 import flixel.input.IFlxInputManager;
-import flixel.input.actions.FlxActionInput;
+import flixel.input.actions.FlxActionInput.FlxInputDeviceID;
 import flixel.util.FlxSignal.FlxTypedSignal;
 
 #if steamwrap
-import steamwrap.api.Controller;
 import steamwrap.api.Steam;
 #end
 
@@ -168,7 +166,6 @@ class FlxSteamController
 		#end
 	}
 	
-	
 	private static function getFirstActiveHandle():Int
 	{
 		#if steamwrap
@@ -230,12 +227,11 @@ class FlxSteamController
 		return data;
 	}
 	#else
-	private static function getAnalogActionData(controller:Int, action:Int):Dynamic
+	private static function getAnalogActionData(controller:Int, action:Int, ?data:Dynamic):Dynamic
 	{
 		return null;
 	}
 	#end
-	
 	
 	#if steamwrap
 	private static function getDigitalActionData(controller:Int, action:Int):ControllerDigitalActionData 

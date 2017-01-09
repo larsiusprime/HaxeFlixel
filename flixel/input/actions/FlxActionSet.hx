@@ -1,18 +1,14 @@
 package flixel.input.actions;
 
-import flixel.input.FlxInput;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
-import flixel.input.actions.FlxAction;
-import flixel.input.actions.FlxActionInput;
-import flixel.input.actions.FlxActionInputAnalog;
-import flixel.input.actions.FlxActionInputDigital;
 import haxe.Json;
 
 #if steamwrap
-import steamwrap.api.Steam;
 import steamwrap.data.ControllerConfig.ControllerActionSet;
 #end
+
+using flixel.util.FlxArrayUtil;
 
 @:allow(flixel.input.actions.FlxActionManager)
 class FlxActionSet implements IFlxDestroyable
@@ -157,21 +153,21 @@ class FlxActionSet implements IFlxDestroyable
 	public function toJSON():String
 	{
 		var space:String = "\t";
-		return Json.stringify(this, function(key:Dynamic, value:Dynamic):Dynamic{
-			
-			if (Std.is(value, FlxAction))
+		return Json.stringify(this, 
+			function(key:Dynamic, value:Dynamic):Dynamic
 			{
-				var fa:FlxAction = cast value;
-				return {
-					"type": fa.type,
-					"name": fa.name,
-					"steamHandle": fa.steamHandle
+				if (Std.is(value, FlxAction))
+				{
+					var fa:FlxAction = cast value;
+					return {
+						"type": fa.type,
+						"name": fa.name,
+						"steamHandle": fa.steamHandle
+					}
 				}
+				return value;
 			}
-			
-			return value;
-			
-		}, space);
+		, space);
 	}
 	
 	public function new(Name:String, DigitalActions:Array<FlxActionDigital>, AnalogActions:Array<FlxActionAnalog>)
@@ -200,8 +196,7 @@ class FlxActionSet implements IFlxDestroyable
 	 */
 	public function addDigital(Action:FlxActionDigital):Bool
 	{
-		if (digitalActions.indexOf(Action) != -1) return false;
-		digitalActions.push(Action);
+		if (digitalActions.contains(Action)) return false;
 		return true;
 	}
 	
@@ -212,17 +207,14 @@ class FlxActionSet implements IFlxDestroyable
 	 */
 	public function addAnalog(Action:FlxActionAnalog):Bool
 	{
-		if (analogActions.indexOf(Action) != -1) return false;
-		analogActions.push(Action);
+		if (analogActions.contains(Action)) return false;
 		return true;
 	}
 	
 	public function destroy():Void
 	{
-		FlxDestroyUtil.destroyArray(digitalActions);
-		FlxDestroyUtil.destroyArray(analogActions);
-		digitalActions = null;
-		analogActions = null;
+		digitalActions = FlxDestroyUtil.destroyArray(digitalActions);
+		analogActions = FlxDestroyUtil.destroyArray(analogActions);
 	}
 	
 	/**
@@ -233,15 +225,12 @@ class FlxActionSet implements IFlxDestroyable
 	 */
 	public function removeDigital(Action:FlxActionDigital, Destroy:Bool = true):Bool
 	{
-		var index = digitalActions.indexOf(Action);
-		if (index != -1)
+		var result = digitalActions.remove(Action);
+		if (result && Destroy)
 		{
-			if (Destroy)
-				digitalActions[index].destroy();
-			digitalActions.splice(index, 1);
-			return true;
+			Action.destroy();
 		}
-		return false;
+		return result;
 	}
 	
 	/**
@@ -252,15 +241,12 @@ class FlxActionSet implements IFlxDestroyable
 	 */
 	public function removeAnalog(Action:FlxActionAnalog, Destroy:Bool = true):Bool
 	{
-		var index = analogActions.indexOf(Action);
-		if (index != -1)
+		var result = analogActions.remove(Action);
+		if (result && Destroy)
 		{
-			if (Destroy)
-				analogActions[index].destroy();
-			analogActions.splice(index, 1);
-			return true;
+			Action.destroy();
 		}
-		return false;
+		return result;
 	}
 	
 	/**
@@ -321,14 +307,10 @@ class FlxActionSet implements IFlxDestroyable
 						}
 					}
 				}
-				else
+				else if (inputExists)
 				{
 					//detaching: remove inputs for this controller if they exist
-					
-					if (inputExists)
-					{
-						action.removeInput(theInput);
-					}
+					action.removeInput(theInput);
 				}
 			}
 		}
