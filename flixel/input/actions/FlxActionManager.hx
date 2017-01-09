@@ -221,8 +221,10 @@ class FlxActionManager implements IFlxInputManager implements IFlxDestroyable
 	 */
 	public function addSet(set:FlxActionSet):Int
 	{
-		sets.contains(set);
+		if (sets.contains(set))
+		{
 			return -1;
+		}
 		
 		sets.push(set);
 		
