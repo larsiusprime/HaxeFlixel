@@ -844,7 +844,23 @@ class ActionSetRegister implements IFlxDestroyable
 	}
 	
 	/**********PRIVATE*********/
+		
+		var sum1 = 0;
+		var sum2 = 0;
+		
+		if (arr != null)
+		{
+			for (n in arr)
+			{
+				sum1 = (sum1 + n) % 255;
+				sum2 = (sum2 + sum1) % 255;
+			}
+		}
+		
+		return (sum2 << 8) | sum1;
+	}
 	
+	/**********PRIVATE*********/
 	/**
 	 * Helper function to properly update the action sets with proper steam inputs
 	 */
