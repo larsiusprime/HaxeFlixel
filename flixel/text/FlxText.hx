@@ -23,6 +23,8 @@ import flixel.util.FlxDestroyUtil;
 import flixel.util.helpers.FlxRange;
 import openfl.Assets;
 import haxe.Utf8;
+import openfl.display.BitmapDataChannel;
+import openfl.geom.Point;
 import openfl.geom.Rectangle;
 using flixel.util.FlxStringUtil;
 using StringTools;
@@ -156,6 +158,8 @@ class FlxText extends FlxSprite
 	 * Helper vars to draw border styles with transparency.
 	 */
 	private var _borderPixels:BitmapData;
+	private var _borderPixelsStamp:BitmapData;
+	private var _borderPt:Point;
 	
 	private var _borderColorTransform:ColorTransform;
 	
@@ -826,7 +830,7 @@ class FlxText extends FlxSprite
 	/**
 	 * Internal function to draw textField to a bitmapData, if flash it calculates every line x to avoid blurry lines.
 	 */
-	private function drawTextFieldTo(graphic:BitmapData):Void
+	private function drawTextFieldTo(graphic:BitmapData, colorTransform:ColorTransform=null):Void
 	{
 		#if flash
 		if (alignment == FlxTextAlign.CENTER && isTextBlurry())
@@ -845,7 +849,7 @@ class FlxText extends FlxSprite
 				}
 				_textFieldRect.setTo(0, h, textField.width, lineMetrics.height + lineMetrics.descent);
 				
-				graphic.draw(textField, _matrix, null, null, _textFieldRect, false);
+				graphic.draw(textField, _matrix, colorTransform, null, _textFieldRect, false);
 				
 				_matrix.tx = tx;
 				h += Std.int(lineMetrics.height);
@@ -907,6 +911,9 @@ class FlxText extends FlxSprite
 			iterations = 1;
 		}
 		var delta:Float = borderSize / iterations;
+		
+		//Draw the text field once to a bitmap field, make sure it's WHITE
+		makeBorderPixels();
 		
 		switch (borderStyle)
 		{
@@ -981,11 +988,40 @@ class FlxText extends FlxSprite
 	/**
 	 * Helper function for applyBorderStyle()
 	 */
+	
+	private inline function makeBorderPixels()
+	{
+		if (_borderPixelsStamp == null || (_borderPixelsStamp.width != graphic.width || _borderPixelsStamp.height != graphic.height))
+		{
+			_borderPixelsStamp = new BitmapData(graphic.width, graphic.height, true, FlxColor.TRANSPARENT);
+			_borderPt = new Point();
+		}
+		else
+		{
+			_borderPixelsStamp.fillRect(_borderPixelsStamp.rect, 0xFFFFFFFF);
+		}
+		
+		drawTextFieldTo(graphic.bitmap);
+		
+		var zpt = new Point();
+		
+		_borderPixelsStamp.copyChannel(graphic.bitmap, graphic.bitmap.rect, zpt, BitmapDataChannel.ALPHA, BitmapDataChannel.ALPHA);
+		_borderPixelsStamp.copyChannel(graphic.bitmap, graphic.bitmap.rect, zpt, BitmapDataChannel.ALPHA, BitmapDataChannel.RED);
+		_borderPixelsStamp.copyChannel(graphic.bitmap, graphic.bitmap.rect, zpt, BitmapDataChannel.ALPHA, BitmapDataChannel.GREEN);
+		_borderPixelsStamp.copyChannel(graphic.bitmap, graphic.bitmap.rect, zpt, BitmapDataChannel.ALPHA, BitmapDataChannel.BLUE);
+		
+		_borderPixelsStamp.draw(graphic.bitmap, null, new ColorTransform(borderColor.redFloat, borderColor.greenFloat, borderColor.blueFloat));
+	}
+	
+	/**
+	 * Helper function for applyBorderStyle()
+	 */
 	private inline function copyTextWithOffset(x:Float, y:Float)
 	{
 		var graphic:BitmapData = _hasBorderAlpha ? _borderPixels : graphic.bitmap;
 		_matrix.translate(x, y);
-		drawTextFieldTo(graphic);
+		_borderPt.setTo(_matrix.tx, _matrix.ty);
+		graphic.copyPixels(_borderPixelsStamp, _borderPixelsStamp.rect, _borderPt, null, null, true);
 	}
 	
 	private function applyFormats(FormatAdjusted:TextFormat, UseBorderColor:Bool = false):Void
