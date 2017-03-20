@@ -816,9 +816,11 @@ class FlxText extends FlxSprite
 			
 			_matrix.identity();
 			
+			/*
 			applyBorderStyle();
 			applyBorderTransparency();
 			applyFormats(_formatAdjusted, false);
+			*/
 			
 			drawTextFieldTo(graphic.bitmap);
 		}

@@ -564,6 +564,20 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		}
 	}
 	
+	private function transformChildrenXY(isX:Bool, value:Float)
+	{
+		if (group == null) return;
+		
+		for (sprite in _sprites)
+		{
+			if (sprite != null)
+			{
+				if (isX) sprite.x += value;
+				else sprite.y += value;
+			}
+		}
+	}
+	
 	/**
 	 * Handy function that allows you to quickly transform multiple properties of sprites in this group at a time.
 	 * 
@@ -640,7 +654,7 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		if (!_skipTransformChildren && exists && x != Value)
 		{
 			var offset:Float = Value - x;
-			transformChildren(xTransform, offset);
+			transformChildrenXY(true, offset);
 		}
 		
 		return x = Value;
@@ -651,7 +665,7 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		if (!_skipTransformChildren && exists && y != Value)
 		{
 			var offset:Float = Value - y;
-			transformChildren(yTransform, offset);
+			transformChildrenXY(false, offset);
 		}
 		
 		return y = Value;

@@ -76,9 +76,11 @@ class FlxDefines
 				FlxMacroUtil.here());
 		#end
 		
-		#if (openfl >= "4.0.0")
-		abort('Flixel is currently incompatible with OpenFL 4.0.0 or above. ' +
-			'Please use version 3.6.1 or older.', FlxMacroUtil.here());
+		#if (!lime_console)
+			#if (openfl >= "4.0.0")
+			abort('Flixel is currently incompatible with OpenFL 4.0.0 or above. ' +
+				'Please use version 3.6.1 or older.', FlxMacroUtil.here());
+			#end
 		#end
 		
 		#if ((lime >= "3.0.0") || (tools >= "3.0.0"))

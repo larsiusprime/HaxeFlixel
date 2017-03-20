@@ -214,13 +214,16 @@ class FlxTilemap extends FlxBaseTilemap<FlxTile>
 	{
 		frames = value;
 		
-		if (value != null)
+		if (value != null && value.frames != null)
 		{
-			_tileWidth = Std.int(value.frames[0].sourceSize.x);
-			_tileHeight = Std.int(value.frames[0].sourceSize.y);
-			_flashRect.setTo(0, 0, _tileWidth, _tileHeight);
-			graphic = value.parent;
-			postGraphicLoad();
+			if (value.frames[0] != null && value.frames[0].sourceSize != null)
+			{
+				_tileWidth = Std.int(value.frames[0].sourceSize.x);
+				_tileHeight = Std.int(value.frames[0].sourceSize.y);
+				_flashRect.setTo(0, 0, _tileWidth, _tileHeight);
+				graphic = value.parent;
+				postGraphicLoad();
+			}
 		}
 		
 		return value;
