@@ -9,12 +9,14 @@ import flixel.system.FlxAssets.FlxShader;
 import openfl.display.Tilesheet;
 import openfl.geom.ColorTransform;
 
-class FlxDrawTilesItem extends FlxDrawBaseItem<FlxDrawTilesItem>
+class FlxDrawTilesItem extends FlxDrawBaseItem
 {
 	public var drawData:Array<Float> = [];
 	public var position:Int = 0;
 	public var numTiles(get, never):Int;
 	public var shader:FlxShader;
+	
+	public var nextTiles:FlxDrawTilesItem;
 	
 	public function new() 
 	{
@@ -25,6 +27,7 @@ class FlxDrawTilesItem extends FlxDrawBaseItem<FlxDrawTilesItem>
 	override public function reset():Void
 	{
 		super.reset();
+		nextTiles = null;
 		position = 0;
 		shader = null;
 	}
@@ -32,6 +35,7 @@ class FlxDrawTilesItem extends FlxDrawBaseItem<FlxDrawTilesItem>
 	override public function dispose():Void
 	{
 		super.dispose();
+		nextTiles = null;
 		drawData = null;
 		shader = null;
 	}

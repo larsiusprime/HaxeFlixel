@@ -18,7 +18,7 @@ typedef DrawData<T> = #if flash Vector<T> #else Array<T> #end;
  * ...
  * @author Zaphod
  */
-class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
+class FlxDrawTrianglesItem extends FlxDrawBaseItem
 {
 	private static var point:FlxPoint = FlxPoint.get();
 	private static var rect:FlxRect = FlxRect.get();
@@ -32,6 +32,8 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 	public var indicesPosition:Int = 0;
 	public var colorsPosition:Int = 0;
 	
+	public var nextTriangles:FlxDrawTrianglesItem;
+	
 	private var bounds:FlxRect = FlxRect.get();
 	
 	public function new() 
@@ -39,7 +41,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 		super();
 		type = FlxDrawItemType.TRIANGLES;
 	}
-	
+		
 	override public function render(camera:FlxCamera):Void 
 	{
 		if (!FlxG.renderTile)
@@ -70,6 +72,9 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 	override public function reset():Void 
 	{
 		super.reset();
+		
+		nextTriangles = null;
+		
 		vertices.splice(0, vertices.length);
 		indices.splice(0, indices.length);
 		uvtData.splice(0, uvtData.length);
@@ -83,6 +88,8 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem<FlxDrawTrianglesItem>
 	override public function dispose():Void 
 	{
 		super.dispose();
+		
+		nextTriangles = null;
 		
 		vertices = null;
 		indices = null;

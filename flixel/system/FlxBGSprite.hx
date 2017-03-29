@@ -28,7 +28,7 @@ class FlxBGSprite extends FlxSprite
 			
 			_matrix.identity();
 			_matrix.scale(camera.width, camera.height);
-			camera.drawPixels(frame, _matrix, colorTransform);
+			camera.drawPixels(frame, null, _matrix, colorTransform, "normal", false, null);
 			
 			#if FLX_DEBUG
 			FlxBasic.visibleCount++;

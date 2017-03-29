@@ -389,7 +389,7 @@ class FlxBitmapText extends FlxSprite
 					
 					_matrix.translate(_point.x + ox, _point.y + oy);
 					_colorParams.setMultipliers(bgRed, bgGreen, bgBlue, bgAlpha);
-					camera.drawPixels(currFrame, null, _matrix, _colorParams, blend, antialiasing);
+					camera.drawPixels(currFrame, null, _matrix, _colorParams, blend, antialiasing, null);
 				}
 				
 				var hasColorOffsets:Bool = (colorTransform != null && colorTransform.hasRGBAOffsets());
