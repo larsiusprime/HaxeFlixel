@@ -23,7 +23,7 @@ typedef FlxSpriteGroup = FlxTypedSpriteGroup<FlxSprite>;
  * a single sprite even if it's made up of several member sprites.
  * It shares the FlxTypedGroup API, but it doesn't inherit from it.
  */
-class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
+ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 {
 	/**
 	 * The actual group which holds all sprites
@@ -197,7 +197,18 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	
 	override public function update(elapsed:Float):Void 
 	{
-		group.update(elapsed);
+		var i:Int = 0;
+		var spr:FlxSprite = null;
+		
+		while (i < length)
+		{
+			spr = _sprites[i++];
+			
+			if (spr != null && spr.exists && spr.active)
+			{
+				spr.update(elapsed);
+			}
+		}
 		
 		if (moves)
 		{
@@ -207,7 +218,18 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	
 	override public function draw():Void 
 	{
-		group.draw();
+		var i:Int = 0;
+		var spr:FlxSprite = null;
+		
+		while (i < length)
+		{
+			spr = _sprites[i++];
+			
+			if (spr != null && spr.exists && spr.visible)
+			{
+				spr.draw();
+			}
+		}
 		#if FLX_DEBUG
 		_isDrawnDebug = false;
 		#end
