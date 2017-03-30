@@ -444,7 +444,7 @@ class FlxCamera extends FlxBasic
 		#else
 		var itemToReturn:FlxDrawTilesItem = null;
 		
-		var blendInt:Int = blend;
+		var blendInt:Int = blendForTilesheet(blend);
 		
 		if (_currentDrawItem != null && _currentDrawItem.type == FlxDrawBaseItem.TYPE_TILES
 			&& FlxGraphic.compareInstances(_headTiles.graphics, graphic)
@@ -495,34 +495,31 @@ class FlxCamera extends FlxBasic
 		#end
 	}
 	
-	private static function blendForTilesheet(blend:BlendMode):Int
+	private static function blendForTilesheet(blendInt:Int):Int
 	{
-		if (blend == null)
-			return Tilesheet.TILE_BLEND_NORMAL;
-		
-		return switch (blend)
+		return switch (blendInt)
 		{
-			case BlendMode.ADD:
+			case 0:  //BlendMode.ADD
 				Tilesheet.TILE_BLEND_ADD;
 			#if !flash
-			case BlendMode.MULTIPLY:
+			case 9:  //BlendMode.MULTIPLY
 				Tilesheet.TILE_BLEND_MULTIPLY;
-			case BlendMode.SCREEN:
+			case 12: //BlendMode.SCREEN
 				Tilesheet.TILE_BLEND_SCREEN;
-			case BlendMode.SUBTRACT:
+			case 14: //BlendMode.SUBTRACT
 				Tilesheet.TILE_BLEND_SUBTRACT;
 			#if (!lime_legacy && openfl > "3.3.1")
-			case BlendMode.DARKEN:
+			case 2: //BlendMode.DARKEN
 				Tilesheet.TILE_BLEND_DARKEN;
-			case BlendMode.LIGHTEN:
+			case 8: //BlendMode.LIGHTEN
 				Tilesheet.TILE_BLEND_LIGHTEN;
-			case BlendMode.OVERLAY:
+			case 11: //BlendMode.OVERLAY
 				Tilesheet.TILE_BLEND_OVERLAY;
-			case BlendMode.HARDLIGHT:
+			case 5:  //BlendMode.HARDLIGHT
 				Tilesheet.TILE_BLEND_HARDLIGHT;
-			case BlendMode.DIFFERENCE:
+			case 3:  //BlendMode.DIFFERENCE
 				Tilesheet.TILE_BLEND_DIFFERENCE;
-			case BlendMode.INVERT:
+			case 6:  //BlendMode.INVERT
 				Tilesheet.TILE_BLEND_INVERT;
 			#end
 			#end
@@ -531,12 +528,19 @@ class FlxCamera extends FlxBasic
 		}
 	}
 	
+	private static inline function castBlend(blend:BlendMode):Int
+	{
+		if (blend == null) return cast BlendMode.NORMAL;
+		var i:Int = cast blend;
+		return i;
+	}
+	
 	@:noCompletion
 	public function startTrianglesBatch(graphic:FlxGraphic, smoothing:Bool = false,
 		isColored:Bool = false, ?blend:BlendMode):FlxDrawTrianglesItem
 	{
 		var itemToReturn:FlxDrawTrianglesItem = null;
-		var blendInt:Int = blendForTilesheet(blend);
+		var blendInt:Int = blendForTilesheet(castBlend(blend));
 		
 		if (_currentDrawItem != null && _currentDrawItem.type == FlxDrawBaseItem.TYPE_TRIANGLES
 			&& _headTriangles.graphics == graphic 
@@ -555,7 +559,7 @@ class FlxCamera extends FlxBasic
 		isColored:Bool = false, ?blend:BlendMode):FlxDrawTrianglesItem
 	{
 		var itemToReturn:FlxDrawTrianglesItem = null;
-		var blendInt:Int = blendForTilesheet(blend);
+		var blendInt:Int = blendForTilesheet(castBlend(blend));
 		
 		if (_storageTrianglesHead != null)
 		{
