@@ -671,7 +671,7 @@ class FlxSprite extends FlxObject
 			_point.floor();
 		
 		_matrix.translate(_point.x, _point.y);
-		camera.drawPixels(_frame, framePixels, _matrix, colorTransform, blend, antialiasing, shader);
+		camera.drawPixels(_frame, framePixels, _matrix, colorTransform, cast blend, antialiasing, shader);
 	}
 	
 	/**

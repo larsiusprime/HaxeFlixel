@@ -13,6 +13,8 @@ import openfl.geom.ColorTransform;
 @:generic
 class FlxDrawBaseItem
 {
+	//public var nextTyped:T;
+	
 	public var next:FlxDrawBaseItem;
 	
 	public var graphics:FlxGraphic;
@@ -21,11 +23,14 @@ class FlxDrawBaseItem
 	public var hasColorOffsets:Bool = false;
 	public var blending:Int = 0;
 	
-	public var type:FlxDrawItemType;
+	public var type:Int;
 	
 	public var numVertices(get, never):Int;
 	
 	public var numTriangles(get, never):Int;
+	
+	public static inline var TYPE_TILES:Int = 0;
+	public static inline var TYPE_TRIANGLES:Int = 1;
 	
 	public function new() {}
 	
@@ -40,7 +45,7 @@ class FlxDrawBaseItem
 	{
 		graphics = null;
 		next = null;
-		type = null;
+		type = -1;
 	}
 	
 	public function render(camera:FlxCamera):Void {}
@@ -56,10 +61,4 @@ class FlxDrawBaseItem
 	{
 		return 0;
 	}
-}
-
-enum FlxDrawItemType 
-{
-	TILES;
-	TRIANGLES;
 }

@@ -2,7 +2,6 @@ package flixel.graphics.tile;
 
 import flixel.FlxCamera;
 import flixel.graphics.frames.FlxFrame;
-import flixel.graphics.tile.FlxDrawBaseItem.FlxDrawItemType;
 import flixel.math.FlxMatrix;
 import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxShader;
@@ -21,7 +20,7 @@ class FlxDrawTilesItem extends FlxDrawBaseItem
 	public function new() 
 	{
 		super();
-		type = FlxDrawItemType.TILES;
+		type = FlxDrawBaseItem.TYPE_TILES;
 	}
 	
 	override public function reset():Void

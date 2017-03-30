@@ -25,6 +25,8 @@ class FlxGraphic implements IFlxDestroyable
 	 */
 	public static var defaultPersist:Bool = false;
 	
+	private static var instanceCount:Int = 0;
+	
 	/**
 	 * Creates and caches FlxGraphic object from openfl.Assets key string.
 	 * 
@@ -235,6 +237,15 @@ class FlxGraphic implements IFlxDestroyable
 		return createGraphic(bitmap, key);
 	}
 	
+	public static function compareInstances(a:FlxGraphic, b:FlxGraphic):Bool
+	{
+		if (a == null && b == null) return true;
+		if (a != null || b != null) return false;
+		if (a._instanceID == b._instanceID) return true;
+		return false;
+	}
+	
+	
 	/**
 	 * Helper method for cloning specified BitmapData if necessary.
 	 * Added to reduce code duplications.
@@ -383,6 +394,8 @@ class FlxGraphic implements IFlxDestroyable
 	
 	private var _destroyOnNoUse:Bool = true;
 	
+	private var _instanceID:Int = 0;
+	
 	/**
 	 * FlxGraphic constructor
 	 * @param	Key			key string for this graphic object, with which you can get it from bitmap cache
@@ -397,6 +410,9 @@ class FlxGraphic implements IFlxDestroyable
 		frameCollections = new Map<FlxFrameCollectionType, Array<Dynamic>>();
 		frameCollectionTypes = new Array<FlxFrameCollectionType>();
 		bitmap = Bitmap;
+		
+		_instanceID = instanceCount;
+		instanceCount++;
 	}
 	
 	/**

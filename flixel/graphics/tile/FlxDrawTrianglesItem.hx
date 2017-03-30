@@ -2,7 +2,6 @@ package flixel.graphics.tile;
 
 import flixel.FlxCamera;
 import flixel.graphics.frames.FlxFrame;
-import flixel.graphics.tile.FlxDrawBaseItem.FlxDrawItemType;
 import flixel.math.FlxMatrix;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
@@ -39,7 +38,7 @@ class FlxDrawTrianglesItem extends FlxDrawBaseItem
 	public function new() 
 	{
 		super();
-		type = FlxDrawItemType.TRIANGLES;
+		type = FlxDrawBaseItem.TYPE_TRIANGLES;
 	}
 		
 	override public function render(camera:FlxCamera):Void 

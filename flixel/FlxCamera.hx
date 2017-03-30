@@ -437,17 +437,17 @@ class FlxCamera extends FlxBasic
 	
 	@:noCompletion
 	public function startQuadBatch(graphic:FlxGraphic, colored:Bool, hasColorOffsets:Bool,
-		blend:String, smooth:Bool, shader:FlxShader)
+		blend:Int, smooth:Bool, shader:FlxShader)
 	{
 		#if FLX_RENDER_TRIANGLE
 		return startTrianglesBatch(graphic, smooth, colored, blend);
 		#else
 		var itemToReturn:FlxDrawTilesItem = null;
 		
-		var blendInt:Int = blendHack(blend);
+		var blendInt:Int = blend;
 		
-		if (_currentDrawItem != null && _currentDrawItem.type == FlxDrawItemType.TILES 
-			&& _headTiles.graphics == graphic 
+		if (_currentDrawItem != null && _currentDrawItem.type == FlxDrawBaseItem.TYPE_TILES
+			&& FlxGraphic.compareInstances(_headTiles.graphics, graphic)
 			&& _headTiles.colored == colored
 			&& _headTiles.hasColorOffsets == hasColorOffsets
 			&& _headTiles.blending == blendInt
@@ -495,30 +495,7 @@ class FlxCamera extends FlxBasic
 		#end
 	}
 	
-	private static function blendHack(str:String):Int
-	{
-		return switch(str)
-		{
-			case "add": 0;
-			case "alpha": 1;
-			case "darken": 2;
-			case "difference": 3;
-			case "erase": 4;
-			case "hardlight": 5;
-			case "invert": 6;
-			case "layer": 7;
-			case "lighten": 8;
-			case "multiply": 9;
-			case "normal": 10;
-			case "overlay": 11;
-			case "screen": 12;
-			case "shader": 13;
-			case "subtract": 14;
-			default: 10;
-		}
-	}
-	
-	private static function blendToInt(blend:BlendMode):Int
+	private static function blendForTilesheet(blend:BlendMode):Int
 	{
 		if (blend == null)
 			return Tilesheet.TILE_BLEND_NORMAL;
@@ -559,9 +536,9 @@ class FlxCamera extends FlxBasic
 		isColored:Bool = false, ?blend:BlendMode):FlxDrawTrianglesItem
 	{
 		var itemToReturn:FlxDrawTrianglesItem = null;
-		var blendInt:Int = blendToInt(blend);
+		var blendInt:Int = blendForTilesheet(blend);
 		
-		if (_currentDrawItem != null && _currentDrawItem.type == FlxDrawItemType.TRIANGLES 
+		if (_currentDrawItem != null && _currentDrawItem.type == FlxDrawBaseItem.TYPE_TRIANGLES
 			&& _headTriangles.graphics == graphic 
 			&& _headTriangles.antialiasing == smoothing
 			&& _headTriangles.colored == isColored
@@ -578,7 +555,7 @@ class FlxCamera extends FlxBasic
 		isColored:Bool = false, ?blend:BlendMode):FlxDrawTrianglesItem
 	{
 		var itemToReturn:FlxDrawTrianglesItem = null;
-		var blendInt:Int = blendToInt(blend);
+		var blendInt:Int = blendForTilesheet(blend);
 		
 		if (_storageTrianglesHead != null)
 		{
@@ -660,13 +637,14 @@ class FlxCamera extends FlxBasic
 	}
 	
 	public function drawPixels(frame:FlxFrame, pixels:BitmapData, matrix:FlxMatrix,
-		transform:ColorTransform, blend:String, smoothing:Bool, shader:FlxShader):Void
+		transform:ColorTransform, blend:Int, smoothing:Bool, shader:FlxShader):Void
 	{
-		if (blend == "" || blend == null) blend = "normal";
+		//if (blend == "" || blend == null) blend = "normal";
 		
 		if (FlxG.renderBlit)
 		{
-			buffer.draw(pixels, matrix, null, blend, null, (smoothing || antialiasing));
+			var bMode:BlendMode = cast blend;
+			buffer.draw(pixels, matrix, null, bMode, null, (smoothing || antialiasing));
 		}
 		else
 		{
@@ -705,9 +683,9 @@ class FlxCamera extends FlxBasic
 			var hasColorOffsets:Bool = (transform != null && transform.hasRGBAOffsets());
 			
 			#if !FLX_RENDER_TRIANGLE
-			var drawItem:FlxDrawTilesItem = startQuadBatch(frame.parent, isColored, hasColorOffsets, blend, smoothing, shader);
+			var drawItem:FlxDrawTilesItem = startQuadBatch(frame.parent, isColored, hasColorOffsets, cast blend, smoothing, shader);
 			#else
-			var drawItem:FlxDrawTrianglesItem = startTrianglesBatch(frame.parent, smoothing, isColored, blend);
+			var drawItem:FlxDrawTrianglesItem = startTrianglesBatch(frame.parent, smoothing, isColored, cast blend);
 			#end
 			drawItem.addQuad(frame, _helperMatrix, transform);
 		}
