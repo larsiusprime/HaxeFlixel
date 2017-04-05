@@ -94,7 +94,7 @@ class FlxTilemap extends FlxBaseTilemap<FlxTile>
 	/**
 	 * Blending modes, just like Photoshop or whatever, e.g. "multiply", "screen", etc.
 	 */
-	public var blend(default, set):BlendMode = null;
+	public var blend(default, set):BlendMode = BlendMode.NORMAL;
 	
 	/**
 	 * GLSL shader for this tilemap. Only works with OpenFL Next or WebGL.
