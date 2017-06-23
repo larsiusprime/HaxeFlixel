@@ -495,6 +495,37 @@ class FlxCamera extends FlxBasic
 		#end
 	}
 	
+	private static inline function blendIntForTilesheet(blend:Int):Int
+	{
+		return switch (blend)
+		{
+			case 0: // BlendMode.ADD:
+				Tilesheet.TILE_BLEND_ADD;
+			#if !flash
+			case 9: // BlendMode.MULTIPLY:
+				Tilesheet.TILE_BLEND_MULTIPLY;
+			case 12: // BlendMode.SCREEN:
+				Tilesheet.TILE_BLEND_SCREEN;
+			case 14: // BlendMode.SUBTRACT:
+				Tilesheet.TILE_BLEND_SUBTRACT;
+			case 2: // BlendMode.DARKEN:
+				Tilesheet.TILE_BLEND_DARKEN;
+			case 8: // BlendMode.LIGHTEN:
+				Tilesheet.TILE_BLEND_LIGHTEN;
+			case 11: // BlendMode.OVERLAY:
+				Tilesheet.TILE_BLEND_OVERLAY;
+			case 5: // BlendMode.HARDLIGHT:
+				Tilesheet.TILE_BLEND_HARDLIGHT;
+			case 3: // BlendMode.DIFFERENCE:
+				Tilesheet.TILE_BLEND_DIFFERENCE;
+			case 6: // BlendMode.INVERT:
+				Tilesheet.TILE_BLEND_INVERT;
+			#end
+			default:
+				Tilesheet.TILE_BLEND_NORMAL;
+		}
+	}
+	
 	private static function blendForTilesheet(blendInt:Int):Int
 	{
 		return switch (blendInt)
