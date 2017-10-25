@@ -9,6 +9,7 @@ import flixel.graphics.frames.FlxFrame;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText.FlxTextAlign;
 import flixel.text.FlxText.FlxTextBorderStyle;
+import flixel.util.FlxArrayUtil;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 import haxe.Utf8;
@@ -38,6 +39,9 @@ class FlxBitmapText extends FlxSprite
 	 * Helper object to avoid many ColorTransform allocations
 	 */
 	private var _colorParams:ColorTransform = new ColorTransform();
+	
+	
+	private var _colorRanges:Array<ColorRange> = [];
 	
 	/**
 	 * Helper array which contains actual strings for rendering.
@@ -418,6 +422,9 @@ class FlxBitmapText extends FlxSprite
 					drawItem.addQuad(currFrame, _matrix, _colorParams);
 				}
 				
+				var currColorRange:ColorRange = _colorRanges.length > 0 ? _colorRanges[0] : null;
+				var currColorI:Int = 0;
+				
 				for (j in 0...textLength)
 				{
 					dataPos = j * 3;
@@ -437,7 +444,37 @@ class FlxBitmapText extends FlxSprite
 					
 					_matrix.translate(_point.x + ox, _point.y + oy);
 					
-					_colorParams.setMultipliers(textRed, textGreen, textBlue, tAlpha);
+					var charRed:Float=textRed;
+					var charGreen:Float=textGreen;
+					var charBlue:Float=textBlue;
+					var charAlpha:Float=tAlpha;
+					
+					if (currColorRange != null)
+					{
+						var skip = false;
+						if (j > currColorRange.end)
+						{
+							currColorI++;
+							if (_colorRanges.length > currColorI)
+							{
+								currColorRange = _colorRanges[currColorI];
+							}
+							else
+							{
+								currColorRange = null;
+								skip = true;
+							}
+						}
+						if (!skip)
+						{
+							charRed = currColorRange.color.redFloat * charRed;
+							charGreen = currColorRange.color.greenFloat * charGreen;
+							charBlue = currColorRange.color.blueFloat * charBlue;
+							charAlpha = currColorRange.alpha * charAlpha;
+						}
+					}
+					
+					_colorParams.setMultipliers(charRed, charGreen, charBlue, charAlpha);
 					drawItem.addQuad(currFrame, _matrix, _colorParams);
 				}
 				
@@ -1502,6 +1539,73 @@ class FlxBitmapText extends FlxSprite
 		pendingTextBitmapChange = true;
 	}
 	
+	public function setColorRange(Color:FlxColor, Start:Int = 0, End:Int =-1, Alpha:Float=1.0)
+	{
+		if (Start <= 0) Start = 0;
+		if (End >= text.length - 1 || End == -1) End = text.length - 1;
+		
+		if (Start == 0 && End == text.length-1)
+		{
+			FlxArrayUtil.clearArray(_colorRanges);
+			_colorRanges.push(new ColorRange(0, text.length - 1, Color, Alpha));
+		}
+		else
+		{
+			var validation:Array<Int> = [];
+			
+			for (i in 0...text.length - 1)
+			{
+				validation.push(0);
+			}
+			
+			for (i in 0..._colorRanges.length)
+			{
+				var r = _colorRanges[i];
+				for (j in r.start...r.end + 1)
+				{
+					validation[j] = i;
+				}
+			}
+			
+			_colorRanges.push(new ColorRange(Start, End, Color, Alpha));
+			
+			for (i in Start...End + 1)
+			{
+				validation[i] = _colorRanges.length-1;
+			}
+			
+			var lastR = validation[0];
+			var s:Int = 0;
+			var e:Int = 0;
+			var newRanges = [];
+			
+			for (i in 0...validation.length)
+			{
+				var currR = validation[i];
+				if(lastR != currR)
+				{
+					var theR = _colorRanges[lastR];
+					var lastC = theR.color;
+					var lastA = theR.alpha;
+					var currR = _colorRanges[currR];
+					var currC = currR.color;
+					var currA = currR.alpha;
+					
+					if(lastC != currC || lastA != currA)
+					{
+						newRanges.push(new ColorRange(s,i-1,theR.color,theR.alpha));
+					}
+					s = i;
+				}
+				lastR = currR;
+			}
+			var theR = _colorRanges[lastR];
+			newRanges.push(new ColorRange(s,text.length-1,theR.color,theR.alpha));
+			
+			_colorRanges = newRanges;
+		}
+	}
+	
 	private function get_fieldWidth():Int
 	{
 		return (autoSize) ? textWidth : _fieldWidth;
@@ -1781,5 +1885,21 @@ class FlxBitmapText extends FlxSprite
 	{
 		checkPendingChanges(true);
 		return super.get_height();
+	}
+}
+
+class ColorRange
+{
+	public var start:Int;
+	public var end:Int;
+	public var color:FlxColor;
+	public var alpha:Float;
+	
+	public function new (Start:Int, End:Int, Color:FlxColor, Alpha:Float)
+	{
+		start = Start;
+		end = End;
+		color = Color;
+		alpha = Alpha;
 	}
 }
