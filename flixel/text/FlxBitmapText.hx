@@ -452,7 +452,7 @@ class FlxBitmapText extends FlxSprite
 					if (currColorRange != null)
 					{
 						var skip = false;
-						if (j > currColorRange.end)
+						if (j > currColorRange.endDraw)
 						{
 							currColorI++;
 							if (_colorRanges.length > currColorI)
@@ -1547,7 +1547,7 @@ class FlxBitmapText extends FlxSprite
 		if (Start == 0 && End == text.length-1)
 		{
 			FlxArrayUtil.clearArray(_colorRanges);
-			_colorRanges.push(new ColorRange(0, text.length - 1, Color, Alpha));
+			_colorRanges.push(new ColorRange(0, text.length - 1, Color, Alpha, text));
 		}
 		else
 		{
@@ -1567,7 +1567,7 @@ class FlxBitmapText extends FlxSprite
 				}
 			}
 			
-			_colorRanges.push(new ColorRange(Start, End, Color, Alpha));
+			_colorRanges.push(new ColorRange(Start, End, Color, Alpha, text));
 			
 			for (i in Start...End + 1)
 			{
@@ -1593,14 +1593,14 @@ class FlxBitmapText extends FlxSprite
 					
 					if(lastC != currC || lastA != currA)
 					{
-						newRanges.push(new ColorRange(s,i-1,theR.color,theR.alpha));
+						newRanges.push(new ColorRange(s,i-1,theR.color,theR.alpha,text));
 					}
 					s = i;
 				}
 				lastR = currR;
 			}
 			var theR = _colorRanges[lastR];
-			newRanges.push(new ColorRange(s,text.length-1,theR.color,theR.alpha));
+			newRanges.push(new ColorRange(s,text.length-1,theR.color,theR.alpha,text));
 			
 			_colorRanges = newRanges;
 		}
@@ -1892,14 +1892,53 @@ class ColorRange
 {
 	public var start:Int;
 	public var end:Int;
+	public var startDraw:Int;
+	public var endDraw:Int;
 	public var color:FlxColor;
 	public var alpha:Float;
 	
-	public function new (Start:Int, End:Int, Color:FlxColor, Alpha:Float)
+	public function new (Start:Int, End:Int, Color:FlxColor, Alpha:Float, Text:String)
+	{
+		set(Start, End, Color, Alpha, Text);
+	}
+	
+	public function set(Start:Int, End:Int, Color:FlxColor, Alpha:Float, Text:String)
 	{
 		start = Start;
 		end = End;
 		color = Color;
 		alpha = Alpha;
+		
+		var space = Utf8.charCodeAt(" ", 0);
+		var endl = Utf8.charCodeAt("\n", 0);
+		var tab = Utf8.charCodeAt("\t", 0);
+		
+		var i:Int = 0;
+		var started = false;
+		var whitespaceBefore:Int = 0;
+		var whitespaceWithin:Int = 0;
+		Utf8.iter(Text, 
+			function(char:Int)
+			{
+				if (i <= end)
+				{
+					if (char == space || char == endl)
+					{
+						if (i < start)
+						{
+							whitespaceBefore++;
+						}
+						else
+						{
+							whitespaceWithin++;
+						}
+					}
+				}
+				i++;
+			}
+		);
+		
+		startDraw = start - whitespaceBefore;
+		endDraw = end - (whitespaceWithin+whitespaceBefore);
 	}
 }
