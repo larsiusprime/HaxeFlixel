@@ -14,6 +14,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 import haxe.Utf8;
 import openfl.geom.ColorTransform;
+import unifill.Unifill;
 using flixel.util.FlxColorTransformUtil;
 
 // TODO: use Utf8 util for converting text to upper/lower case
@@ -1539,21 +1540,25 @@ class FlxBitmapText extends FlxSprite
 		pendingTextBitmapChange = true;
 	}
 	
-	public function setColorRange(Color:FlxColor, Start:Int = 0, End:Int =-1, Alpha:Float=1.0)
+	public function setColorRange(Color:FlxColor, Start:Int = 0, End:Int =-1, Alpha:Float=1.0, Text:String=null)
 	{
-		if (Start <= 0) Start = 0;
-		if (End >= text.length - 1 || End == -1) End = text.length - 1;
+		var theText:String = Text != null ? Text : text;
 		
-		if (Start == 0 && End == text.length-1)
+		var ulen = Unifill.uLength(theText);
+	
+		if (Start <= 0) Start = 0;
+		if (End >= ulen - 1 || End == -1) End = ulen - 1;
+		
+		if (Start == 0 && End == ulen-1)
 		{
 			FlxArrayUtil.clearArray(_colorRanges);
-			_colorRanges.push(new ColorRange(0, text.length - 1, Color, Alpha, text));
+			_colorRanges.push(new ColorRange(0, ulen - 1, Color, Alpha, theText));
 		}
 		else
 		{
 			var validation:Array<Int> = [];
 			
-			for (i in 0...text.length - 1)
+			for (i in 0...ulen - 1)
 			{
 				validation.push(0);
 			}
@@ -1567,7 +1572,7 @@ class FlxBitmapText extends FlxSprite
 				}
 			}
 			
-			_colorRanges.push(new ColorRange(Start, End, Color, Alpha, text));
+			_colorRanges.push(new ColorRange(Start, End, Color, Alpha, theText));
 			
 			for (i in Start...End + 1)
 			{
@@ -1593,16 +1598,21 @@ class FlxBitmapText extends FlxSprite
 					
 					if(lastC != currC || lastA != currA)
 					{
-						newRanges.push(new ColorRange(s,i-1,theR.color,theR.alpha,text));
+						newRanges.push(new ColorRange(s,i-1,theR.color,theR.alpha,theText));
 					}
 					s = i;
 				}
 				lastR = currR;
 			}
 			var theR = _colorRanges[lastR];
-			newRanges.push(new ColorRange(s,text.length-1,theR.color,theR.alpha,text));
+			newRanges.push(new ColorRange(s,ulen-1,theR.color,theR.alpha,theText));
 			
 			_colorRanges = newRanges;
+		}
+		
+		if (Text != null)
+		{
+			text = Text;
 		}
 	}
 	
