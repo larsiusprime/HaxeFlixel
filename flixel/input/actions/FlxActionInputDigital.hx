@@ -80,6 +80,11 @@ class FlxActionInputDigitalGamepad extends FlxActionInputDigital
 		super(FlxInputDevice.GAMEPAD, InputID, Trigger, GamepadID);
 	}
 	
+	public function toString():String
+	{
+		return "FlxActionInputDigitalGamepad{inputID:" + inputID + ",trigger:" + trigger + ",deviceID:" + deviceID + ",device:"+device+",type:"+type+"}";
+	}
+	
 	override public function check(Action:FlxAction):Bool 
 	{
 		#if !FLX_NO_GAMEPAD
