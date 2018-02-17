@@ -18,11 +18,9 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.system.FlxAssets.FlxShader;
-import flixel.util.FlxArrayUtil;
 import flixel.util.FlxBitmapDataUtil;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
-import openfl.display.Tilesheet;
 using flixel.util.FlxColorTransformUtil;
 
 @:keep @:bitmap("assets/images/logo/default.png")
@@ -154,11 +152,6 @@ class FlxSprite extends FlxObject
 	public var useColorTransform(default, null):Bool = false;
 	
 	/**
-	 * Whether or not to use a custom palette set via setPalette
-	 */
-	public var usePalette(default, set):Bool = false;
-	
-	/**
 	 * Clipping rectangle for this sprite.
 	 * Changing the rect's properties directly doesn't have any effect,
 	 * reassign the property to update it (`sprite.clipRect = sprite.clipRect;`).
@@ -172,8 +165,6 @@ class FlxSprite extends FlxObject
 	 */
 	#if openfl_legacy @:noCompletion #end
 	public var shader:FlxShader;
-	
-	private var _palette:Array<FlxColor>;
 	
 	/**
 	 * The actual frame used for sprite rendering
@@ -284,7 +275,6 @@ class FlxSprite extends FlxObject
 		_flashPointZero = null;
 		_matrix = null;
 		colorTransform = null;
-		_palette = null;
 		blend = null;
 		
 		frames = null;
@@ -835,202 +825,6 @@ class FlxSprite extends FlxObject
 			colorTransform.setMultipliers(1, 1, 1, 1);
 		
 		dirty = true;
-	}
-	
-	/**
-	 * Turn on 1-for-1 pixel value palette swapping
-	 * @param	values	new colors you want to replace your existing ones with
-	 * @param	autoIndex	true: automatically construct a monochrome palette index (ordered by first incidence from top-left to bottom-right), false: assumes your base image is already indexed
-	 */
-	public function setPalette(values:Array<FlxColor>, autoIndex:Bool=true):Void
-	{
-		constructPaletteIndex(autoIndex);
-		
-		if (values == null || values.length == 0)
-		{
-			_palette = null;
-			usePalette = false;
-			return;
-		}
-		
-		if (!FlxArrayUtil.equals(values, _palette))
-		{
-			_palette = values.copy();
-			var oldPaletteGfx = getPaletteGfx(false);
-			if (oldPaletteGfx != null)
-			{
-				oldPaletteGfx.useCount--;
-			}
-		}
-		
-		usePalette = true;
-	}
-	
-	private function getPaletteGfx(createIfNotFound:Bool=true):FlxGraphic
-	{
-		var paletteKey = getPaletteKey();
-		if (paletteKey == null) return null;
-		if (FlxG.bitmap.checkCache(paletteKey))
-		{
-			return FlxG.bitmap.get(paletteKey);
-		}
-		if (createIfNotFound)
-		{
-			var paletteBmp = new BitmapData(256, 1, true, 0x0);
-			for (i in 0..._palette.length)
-			{
-				if (i > 255)
-				{
-					break;
-				}
-				paletteBmp.setPixel32(i, 0, _palette[i]);
-			}
-			return FlxG.bitmap.add(paletteBmp, false, paletteKey);
-		}
-		return null;
-	}
-	
-	@:access(flixel.graphics.FlxGraphic)
-	@:access(openfl.display.Tilesheet)
-	private function set_usePalette(b:Bool):Bool
-	{
-		if (b)
-		{
-			var paletteGfx = getPaletteGfx();
-			if (paletteGfx != null)
-			{
-				var myKey = getBaseKey();
-				var indexedGfx = FlxG.bitmap.get(myKey + "_indexed");
-				if (indexedGfx != null)
-				{
-					var animated = (width != indexedGfx.bitmap.width || height != indexedGfx.bitmap.height);
-					
-					var colorizedKey = myKey + "_palette_" + _palette.join(",");
-					var colorizedGfx:FlxGraphic = null;
-					
-					if (FlxG.bitmap.checkCache(colorizedKey))
-					{
-						colorizedGfx = FlxG.bitmap.get(colorizedKey);
-					}
-					else
-					{
-						colorizedGfx = new FlxGraphic(colorizedKey, indexedGfx.bitmap);
-						colorizedGfx.tilesheet.__bitmapPalette = paletteGfx.bitmap;
-						FlxG.bitmap.addGraphic(colorizedGfx);
-						paletteGfx.useCount++;
-					}
-					
-					loadGraphic(colorizedGfx, animated, frameWidth, frameHeight);
-				}
-				else
-				{
-					b = false;
-				}
-			}
-			else
-			{
-				b = false;
-			}
-		}
-		
-		if (!b)
-		{
-			var baseKey = getBaseKey();
-			var baseGfx:FlxGraphic;
-			if (!FlxG.bitmap.checkCache(baseKey))
-			{
-				baseGfx = FlxG.bitmap.add(baseKey);
-			}
-			else
-			{
-				baseGfx = FlxG.bitmap.get(baseKey);
-			}
-			var animated = (width != baseGfx.bitmap.width || height != baseGfx.bitmap.height);
-			loadGraphic(baseGfx, animated, frameWidth, frameHeight);
-		}
-		
-		usePalette = b;
-		return usePalette;
-	}
-	
-	private function getPaletteKey():String
-	{
-		if (_palette == null)
-		{
-			return null;
-		}
-		return "palette_" + _palette.join(",");
-	}
-	
-	private function getBaseKey():String
-	{
-		var myKey = graphic.key;
-		var subStrEnd = myKey.lastIndexOf("_indexed");
-		if (subStrEnd == myKey.length - ("_indexed").length)
-		{
-			return myKey.substr(0, subStrEnd);
-		}
-		return myKey;
-	}
-	
-	@:access(flixel.graphics.FlxGraphic)
-	private function constructPaletteIndex(autoIndex:Bool):Void
-	{
-		var myKey = graphic.key;
-		var baseKey = getBaseKey();
-		
-		//Check if we already have an indexed version of this image, if so return early
-		if (myKey == baseKey + "_indexed")
-		{
-			return;
-		}
-		
-		var indexedBmp:BitmapData = null;
-		
-		//If we're not auto-indexing, store a copy of this FlxGraphic as the indexed version, and return early
-		if (!autoIndex)
-		{
-			//We need to make a clone, which technically duplicates memory, but you only need to do it once for infinite color permutations, AND
-			//if all instances of the sprite that use the base image are using setPalette, the original base image will be cleaned up
-			indexedBmp = graphic.bitmap.clone();
-			var gfx = new FlxGraphic(myKey +"_indexed", indexedBmp);
-			FlxG.bitmap.addGraphic(gfx);
-			return;
-		}
-		
-		//If we get here we need to construct a new palette index from the existing image
-		
-		var colorIndex = 0;
-		var colorSet = new Map<Int, Int>();
-		colorSet.set(0, colorIndex);
-		colorIndex++;
-		
-		var originalBmp = graphic.bitmap;
-		indexedBmp = originalBmp.clone();
-		
-		//Store each unique non-transparent pixel in a palette, indexed by order of first occurence (left-to-right, top-to-bottom)
-		for (y in 0...originalBmp.height) {
-			for (x in 0...originalBmp.width) {
-				var pixel = originalBmp.getPixel32(x, y);
-				if ((pixel >> 24) & 0xff == 0) {
-					continue;
-				}
-				
-				var key = pixel & 0xffffff;
-				var c = colorSet.get(key);
-				if (c == null) {
-					colorSet.set(key, colorIndex);
-					c = colorIndex;
-					colorIndex++;
-					if (colorIndex > 255) {
-						colorIndex = 255;
-					}
-				}
-				indexedBmp.setPixel32(x, y, (pixel & 0xff000000) | (c << 16));
-			}
-		}
-		
-		FlxG.bitmap.add(indexedBmp, false, myKey + "_indexed");
 	}
 	
 	/**
