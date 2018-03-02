@@ -27,7 +27,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 		_class = classObj;
 	}
 	
-	public function get():T
+	public inline function get():T
 	{
 		if (_count == 0)
 		{
@@ -36,7 +36,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 		return _pool[--_count];
 	}
 	
-	public function put(obj:T):Void
+	public inline function put(obj:T):Void
 	{
 		// we don't want to have the same object in the accessible pool twice (ok to have multiple in the inaccessible zone)
 		if (obj != null)
@@ -51,7 +51,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 		}
 	}
 	
-	public function putUnsafe(obj:T):Void
+	public inline function putUnsafe(obj:T):Void
 	{
 		if (obj != null)
 		{
@@ -60,7 +60,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 		}
 	}
 	
-	public function preAllocate(numObjects:Int):Void
+	public inline function preAllocate(numObjects:Int):Void
 	{
 		while (numObjects-- > 0)
 		{
@@ -68,7 +68,7 @@ class FlxPool<T:IFlxDestroyable> implements IFlxPool<T>
 		}
 	}
 	
-	public function clear():Array<T>
+	public inline function clear():Array<T>
 	{
 		_count = 0;
 		var oldPool = _pool;
