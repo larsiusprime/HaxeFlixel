@@ -816,7 +816,6 @@ class FlxText extends FlxSprite
 			
 			_matrix.identity();
 			
-			
 			#if !FLX_NO_TEXT_BORDERS
 			applyBorderStyle();
 			applyBorderTransparency();
@@ -910,6 +909,11 @@ class FlxText extends FlxSprite
 	
 	private function applyBorderStyle():Void
 	{
+		if (borderStyle == NONE || borderSize == 0)
+		{
+			return;
+		}
+		
 		var iterations:Int = Std.int(borderSize * borderQuality);
 		if (iterations <= 0) 
 		{ 
