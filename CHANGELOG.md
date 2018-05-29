@@ -1,3 +1,16 @@
+4.5.0 (to be released)
+------------------------------
+#### New features:
+
+- `FlxTween`:
+	- added support for tweening sub-properties like `"scale.x"` with `tween()` ([#2152](https://github.com/HaxeFlixel/flixel/issues/2152))
+	- added a `FlxTweenType` enum abstract and deprecated the constants in `FlxTween`
+
+#### Bugfixes:
+
+- `FlxBitmapText`: fixed clipping issues with text using borders ([#2151](https://github.com/HaxeFlixel/flixel/issues/2151))
+- `FlxAssetPaths`: fixed variables with invalid Haxe identifiers being generated ([#1796](https://github.com/HaxeFlixel/flixel/issues/1796))
+
 4.4.1 (May 10, 2018)
 ------------------------------
 #### Bugfixes:
