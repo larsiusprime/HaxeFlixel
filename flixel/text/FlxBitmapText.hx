@@ -13,6 +13,7 @@ import flixel.util.FlxArrayUtil;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 import haxe.Utf8;
+import openfl.display.BlendMode;
 import openfl.geom.ColorTransform;
 import unifill.Unifill;
 using flixel.util.FlxColorTransformUtil;
@@ -292,6 +293,17 @@ class FlxBitmapText extends FlxSprite
 		}
 	}
 	
+	private var intBlend:Int = cast BlendMode.NORMAL;
+	override function set_blend(Value:BlendMode):BlendMode
+	{
+		Value = super.set_blend(Value);
+		if (Value != null)
+		{
+			intBlend = cast Value;
+		}
+		return Value;
+	}
+	
 	override public function draw():Void 
 	{
 		if (FlxG.renderBlit)
@@ -394,12 +406,12 @@ class FlxBitmapText extends FlxSprite
 					
 					_matrix.translate(_point.x + ox, _point.y + oy);
 					_colorParams.setMultipliers(bgRed, bgGreen, bgBlue, bgAlpha);
-					camera.drawPixels(currFrame, null, _matrix, _colorParams, cast blend, antialiasing, null);
+					camera.drawPixels(currFrame, null, _matrix, _colorParams, intBlend, antialiasing, null);
 				}
 				
 				var hasColorOffsets:Bool = (colorTransform != null && colorTransform.hasRGBAOffsets());
 				
-				drawItem = camera.startQuadBatch(font.parent, true, hasColorOffsets, cast blend, antialiasing, shader);
+				drawItem = camera.startQuadBatch(font.parent, true, hasColorOffsets, intBlend, antialiasing, shader);
 				
 				for (j in 0...borderLength)
 				{

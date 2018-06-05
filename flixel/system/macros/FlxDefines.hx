@@ -22,6 +22,8 @@ private enum UserDefines
 	FLX_UNIT_TEST;
 	/* additional rendering define */
 	FLX_RENDER_TRIANGLE;
+	
+	FLX_NO_TEXT_BORDERS;
 }
 
 /**
@@ -138,9 +140,9 @@ class FlxDefines
 		if (!defined(FLX_NO_SOUND_SYSTEM) && !defined(FLX_NO_SOUND_TRAY))
 			define(FLX_SOUND_TRAY);
 		
-		if ((defined("openfl_next") && !defined("flash")) || defined("flash11_8"))
+		if ((defined("next") && !defined("flash")) || defined("flash11_8"))
 			define(FLX_GAMEINPUT_API);
-		else if (!defined("openfl_next") && (defined("cpp") || defined("neko")))
+		else if (!defined("next") && (defined("cpp") || defined("neko")))
 			define(FLX_JOYSTICK_API);
 		
 		if (!defined(FLX_NO_TOUCH) || !defined(FLX_NO_MOUSE))
