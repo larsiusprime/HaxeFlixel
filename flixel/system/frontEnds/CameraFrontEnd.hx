@@ -169,6 +169,7 @@ class CameraFrontEnd
 	 * Called by the game object to lock all the camera buffers and clear them for the next draw pass.
 	 */
 	@:allow(flixel.FlxGame)
+	@:access(flixel.FlxCamera)
 	inline function lock():Void
 	{
 		for (camera in list)
@@ -191,7 +192,9 @@ class CameraFrontEnd
 			if (FlxG.renderTile)
 			{
 				camera.clearDrawStack();
-				camera.canvas.graphics.clear();
+				camera.canvas.removeTiles();
+				camera.resetPool();
+			//	camera.canvas.graphics.clear();
 				// Clearing camera's debug sprite
 				#if FLX_DEBUG
 				camera.debugLayer.graphics.clear();

@@ -37,7 +37,9 @@ class FlxBitmapText extends FlxSprite
 	/**
 	 * Helper object to avoid many ColorTransform allocations
 	 */
-	var _colorParams:ColorTransform = new ColorTransform();
+	var _textColorParams:ColorTransform = new ColorTransform();
+	var _borderColorParams:ColorTransform = new ColorTransform();
+	var _bgColorParams:ColorTransform = new ColorTransform();
 	
 	/**
 	 * Helper array which contains actual strings for rendering.
@@ -234,7 +236,9 @@ class FlxBitmapText extends FlxSprite
 		shadowOffset = FlxDestroyUtil.put(shadowOffset);
 		textBitmap = FlxDestroyUtil.dispose(textBitmap);
 		
-		_colorParams = null;
+		_textColorParams = null;
+		_borderColorParams = null;
+		_bgColorParams = null;
 		
 		if (FlxG.renderTile)
 		{
@@ -388,13 +392,13 @@ class FlxBitmapText extends FlxSprite
 					}
 					
 					_matrix.translate(_point.x + ox, _point.y + oy);
-					_colorParams.setMultipliers(bgRed, bgGreen, bgBlue, bgAlpha);
-					camera.drawPixels(currFrame, null, _matrix, _colorParams, blend, antialiasing);
+					_bgColorParams.setMultipliers(bgRed, bgGreen, bgBlue, bgAlpha);
+					camera.drawPixels(currFrame, null, _matrix, _bgColorParams, blend, antialiasing);
 				}
 				
 				var hasColorOffsets:Bool = (colorTransform != null && colorTransform.hasRGBAOffsets());
 				
-				drawItem = camera.startQuadBatch(font.parent, true, hasColorOffsets, blend, antialiasing, shader);
+			//	drawItem = camera.startQuadBatch(font.parent, true, hasColorOffsets, blend, antialiasing, shader);
 				
 				for (j in 0...borderLength)
 				{
@@ -414,8 +418,10 @@ class FlxBitmapText extends FlxSprite
 					}
 					
 					_matrix.translate(_point.x + ox, _point.y + oy);
-					_colorParams.setMultipliers(borderRed, borderGreen, borderBlue, bAlpha);
-					drawItem.addQuad(currFrame, _matrix, _colorParams);
+					_borderColorParams.setMultipliers(borderRed, borderGreen, borderBlue, bAlpha);
+				//	drawItem.addQuad(currFrame, _matrix, _borderColorParams);
+					
+					camera.drawPixels(currFrame, null, _matrix, _borderColorParams, blend, antialiasing, shader);
 				}
 				
 				for (j in 0...textLength)
@@ -437,8 +443,10 @@ class FlxBitmapText extends FlxSprite
 					
 					_matrix.translate(_point.x + ox, _point.y + oy);
 					
-					_colorParams.setMultipliers(textRed, textGreen, textBlue, tAlpha);
-					drawItem.addQuad(currFrame, _matrix, _colorParams);
+					_textColorParams.setMultipliers(textRed, textGreen, textBlue, tAlpha);
+				//	drawItem.addQuad(currFrame, _matrix, _textColorParams);
+					
+					camera.drawPixels(currFrame, null, _matrix, _textColorParams, blend, antialiasing, shader);
 				}
 				
 				#if FLX_DEBUG
@@ -1446,7 +1454,7 @@ class FlxBitmapText extends FlxSprite
 			colorToApply = borderColor;
 		}
 		
-		_colorParams.setMultipliers(
+		_textColorParams.setMultipliers(
 			colorToApply.redFloat, colorToApply.greenFloat,
 			colorToApply.blueFloat, colorToApply.alphaFloat);
 		
@@ -1457,7 +1465,7 @@ class FlxBitmapText extends FlxSprite
 		}
 		else
 		{
-			bitmap.draw(textBitmap, _matrix, _colorParams);
+			bitmap.draw(textBitmap, _matrix, _textColorParams);
 		}
 	}
 	
