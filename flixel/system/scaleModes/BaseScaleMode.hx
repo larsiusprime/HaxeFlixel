@@ -15,12 +15,18 @@ class BaseScaleMode
 	public var horizontalAlign(default, set):FlxHorizontalAlign = CENTER;
 	public var verticalAlign(default, set):FlxVerticalAlign = CENTER;
 	
+	public var pointerMultiplier(default, null):FlxPoint;
+	public var pointerOffset(default, null):FlxPoint;
+	
 	public function new()
 	{
 		deviceSize = FlxPoint.get();
 		gameSize = FlxPoint.get();
 		scale = FlxPoint.get();
 		offset = FlxPoint.get();
+		pointerMultiplier = FlxPoint.get(1, 1);
+		pointerOffset = FlxPoint.get(0, 0);
+		
 	}
 	
 	public function onMeasure(Width:Int, Height:Int):Void
