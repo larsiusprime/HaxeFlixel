@@ -129,7 +129,11 @@ class FlxSteamController
 		if (controllers == null) return -1;
 		if (SteamControllerHandle >= 0 && SteamControllerHandle <= controllers.length)
 		{
-			return controllers[SteamControllerHandle].actionSet;
+			var controller = controllers[SteamControllerHandle];
+			if (controller != null)
+			{
+				return controller.actionSet;
+			}
 		}
 		#end
 		return -1;
