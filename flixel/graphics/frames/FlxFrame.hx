@@ -111,7 +111,7 @@ class FlxFrame implements IFlxDestroyable
 	
 	@:allow(flixel.graphics.frames.FlxFramesCollection)
 	@:allow(flixel.graphics.frames.FlxBitmapFont)
-	function cacheFrameMatrix():Void
+	inline function cacheFrameMatrix():Void
 	{
 		prepareBlitMatrix(matrix, true);
 		blitMatrix[0] = matrix.a;
@@ -239,7 +239,7 @@ class FlxFrame implements IFlxDestroyable
 	 * @param   flipY      Do we need to flip frame vertically
 	 * @return  Transformed matrix which can be used for frame drawing.
 	 */
-	public function prepareMatrix(mat:FlxMatrix, rotation:FlxFrameAngle = FlxFrameAngle.ANGLE_0, flipX:Bool = false,
+	public inline function prepareMatrix(mat:FlxMatrix, rotation:FlxFrameAngle = FlxFrameAngle.ANGLE_0, flipX:Bool = false,
 		flipY:Bool = false):FlxMatrix
 	{
 		if (FlxG.renderBlit)
