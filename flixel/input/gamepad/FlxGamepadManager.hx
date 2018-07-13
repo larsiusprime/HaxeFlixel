@@ -401,10 +401,15 @@ class FlxGamepadManager implements IFlxInputManager
 			else if (name.contains("logitech")) LOGITECH;
 			else if (name.contains("xbox") && name.contains("360")) XINPUT;
 			else if (name.contains("xinput")) XINPUT;
-			else if (name.contains("nintendo rvlcnt01tr")) WII_REMOTE;                  //WiiRemote with motion plus
-			else if (name.contains("nintendo rvlcnt01")) WII_REMOTE;                    //WiiRemote w/o  motion plus
+			else if (name.contains("nintendo rvlcnt01tr")) WII_REMOTE;                   //WiiRemote with motion plus
+			else if (name.contains("nintendo rvlcnt01")) WII_REMOTE;                     //WiiRemote w/o  motion plus
 			else if (name.contains("mayflash wiimote pc adapter")) MAYFLASH_WII_REMOTE;  //WiiRemote paired to MayFlash DolphinBar (with or w/o motion plus)
 			else if (name.contains("mfi")) MFI;
+			else if (name.contains("switch pro controller compatible")) SWITCH_PRO;
+			else if (name.contains("joycons connected to console")) SWITCH_JOYCON_ATTACHED;
+			else if (name.contains("joycon (dual)")) SWITCH_JOYCON_DUAL;
+			else if (name.contains("joycon (left)")) SWITCH_JOYCON_LEFT;
+			else if (name.contains("joycon (right)")) SWITCH_JOYCON_RIGHT;
 			else UNKNOWN;
 	}
 	
