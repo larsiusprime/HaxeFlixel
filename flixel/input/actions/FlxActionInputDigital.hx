@@ -166,6 +166,8 @@ class FlxActionInputDigitalGamepad extends FlxActionInputDigital
 
 class FlxActionInputDigitalKeyboard extends FlxActionInputDigital
 {
+	private var any:Bool = false;
+	
 	/**
 	 * Keyboard action input
 	 * @param	Key Key identifier (FlxKey.SPACE, FlxKey.Z, etc)
@@ -174,10 +176,27 @@ class FlxActionInputDigitalKeyboard extends FlxActionInputDigital
 	public function new(Key:FlxKey, Trigger:FlxInputState)
 	{
 		super(FlxInputDevice.KEYBOARD, Key, Trigger);
+		if (Key == FlxKey.ANY){
+			any = true;
+		}
 	}
 	
 	override public function check(Action:FlxAction):Bool 
 	{
+		if (any)
+		{
+			return switch (trigger)
+			{
+				#if !FLX_NO_KEYBOARD
+				case PRESSED:       FlxG.keys.firstPressed() != -1 || FlxG.keys.firstJustPressed() != -1;
+				case RELEASED:      FlxG.keys.firstPressed() == -1;
+				case JUST_PRESSED:  FlxG.keys.firstJustPressed() != -1;
+				case JUST_RELEASED: FlxG.keys.firstJustReleased() != -1;
+				#end
+				default: false;
+			}
+		}
+		
 		return switch (trigger)
 		{
 			#if !FLX_NO_KEYBOARD
